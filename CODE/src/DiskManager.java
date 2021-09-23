@@ -14,7 +14,7 @@ public class DiskManager {
 		File file = new File(filename);
 		
 		if (!file.exists()) {
-			//Creer le fichier f0x.df ici
+			//Creer le fichier f0.df ici
 		}
 		
 		while(found == false) {

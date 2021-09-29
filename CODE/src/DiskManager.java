@@ -1,11 +1,10 @@
 import java.nio.*;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class DiskManager {
 
@@ -124,15 +123,15 @@ public class DiskManager {
 
 	public void ReadPage(PageID pageId, ByteBuffer buff) {
 		try {
-            buff.get(Files.readAllBytes(Paths.get(DBParams.DBPath+"f"+pageId.getFileId()+".df"))); 
-            for (int i = 0; i < DBParams.PageSize; i++) {
-            	int f_byte=DBParams.PageSize*pageId.getPageId();
-            	buff.position(f_byte);
-            	System.out.print(buff.get());
-			}
-      
-        } catch (IOException e) {
+            RandomAccessFile file = new RandomAccessFile(DBParams.DBPath+"f"+pageId.getFileId()+".df","r");
+            int f_byte=DBParams.PageSize*pageId.getPageId();
+            file.seek(f_byte);
+            file.read(buff.array());
+            file.close();
+		}catch (FileNotFoundException e) {
             System.out.println(e.toString());
+        }catch(IOException e) {
+        	System.out.println(e.getMessage());
         }
 
 	}

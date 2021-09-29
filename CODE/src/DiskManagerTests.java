@@ -1,4 +1,5 @@
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.io.File;
 import java.nio.*;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,9 @@ public class DiskManagerTests {
 		page = DiskManager.AllocPage();
 		
 		ByteBuffer buffer = ByteBuffer.allocate(DBParams.PageSize);
-		
+		DiskManager.ReadPage(page,buffer);
+		byte[] array = new byte[buffer.remaining()];
+		buffer.get(array);
+		System.out.println(Arrays.toString(array));
 	}
 }

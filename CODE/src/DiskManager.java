@@ -124,9 +124,10 @@ public class DiskManager {
 
 	public void ReadPage(PageID pageId, ByteBuffer buff) {
 		try {
-		      
             buff.get(Files.readAllBytes(Paths.get(DBParams.DBPath+"f"+pageId.getFileId()+".df"))); 
-            for (int i = 0; i < buff.capacity(); i++) {
+            for (int i = 0; i < DBParams.PageSize; i++) {
+            	int f_byte=DBParams.PageSize*pageId.getPageId();
+            	buff.position(f_byte);
             	System.out.print(buff.get());
 			}
       

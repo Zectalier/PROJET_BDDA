@@ -136,19 +136,20 @@ public class DiskManager {
 
 	}
 
-	public void WritePage(PageID pageId, ByteBuffer buff) {
-		File file = new File(DBParams.DBPath+"f"+pageId.getFileId()+".df");
-		boolean append = true;
+	public static void WritePage(PageID pageId, ByteBuffer buff) {
 		try {
-			FileChannel wChannel = new FileOutputStream(file, append).getChannel();
-
-		    wChannel.write(buff);
-
-		    wChannel.close();
-		}catch(FileNotFoundException e) {
-			System.out.println("FileNotFoundException: "+e.getMessage());
-		}catch(IOException e){
-			System.out.println("IOException: "+e.getMessage());
+			RandomAccessFile file = new RandomAccessFile("../DB/f"+pageId.getFileId()+".df","rw");
+			byte[] array = new byte[buff.remaining()];
+			buff.get(array);
+			file.seek(pageId.getPageId()*DBParams.PageSize);
+			file.write(array);
+			file.close();
+		}
+		catch(FileNotFoundException e) {
+			System.out.println("Erreur, le fichier n'a pas pu être trouvé");
+		}
+		catch(IOException e) {
+			System.out.println("Erreur, le fichier n'a pas pu être crée");
 		}
 	}
 }

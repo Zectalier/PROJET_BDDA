@@ -1,11 +1,7 @@
 import java.nio.*;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -127,12 +123,21 @@ public class DiskManager {
 	}
 
 	public void ReadPage(PageID pageId, ByteBuffer buff) {
-		File file = new File("../DB/f"+pageId.getFileId()+".df");
+		try {
+		      
+            buff.get(Files.readAllBytes(Paths.get(DBParams.DBPath+"f"+pageId.getFileId()+".df"))); 
+            for (int i = 0; i < buff.capacity(); i++) {
+            	System.out.print(buff.get());
+			}
+      
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
 
 	}
 
 	public void WritePage(PageID pageId, ByteBuffer buff) {
-		File file = new File("../DB/f"+pageId.getFileId()+".df");
+		File file = new File(DBParams.DBPath+"f"+pageId.getFileId()+".df");
 		boolean append = true;
 		try {
 			FileChannel wChannel = new FileOutputStream(file, append).getChannel();

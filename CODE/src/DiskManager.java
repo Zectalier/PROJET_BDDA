@@ -20,11 +20,11 @@ public class DiskManager {
 			try{
 				file.createNewFile();
 			}catch(IOException e) {
-				System.out.println("Erreur, le fichier n'a pas pu être crée");
+				System.out.println("Erreur, le fichier n'a pas pu Ãªtre crÃ©e");
 				e.getMessage();
 			}
 			
-			//Allouer la page PageID(0,0) au nouveau fichier ( qui devrait être "f0.df" ) avec WritePage()
+			//Allouer la page PageID(0,0) au nouveau fichier ( qui devrait Ãªtre "f0.df" ) avec WritePage()
 			page = new PageID(x,0);
 			ByteBuffer buffer = ByteBuffer.allocate(DBParams.PageSize);
 			for(int i = 0; i<DBParams.PageSize;i++) {
@@ -40,17 +40,17 @@ public class DiskManager {
 			filename = String.format(DBParams.DBPath+"f%d.df",x);
 			file = new File(filename);
 			
-			//Création du fichier si on ne trouve pas de fichier ayant de la place
+			//CrÃ©ation du fichier si on ne trouve pas de fichier ayant de la place
 			if (!file.exists()) {
 				
 				//Creer le nouveau fichier fx.df ici
 				try{
 					file.createNewFile();
 				}catch(IOException e) {
-					System.out.println("Erreur, le fichier n'a pas pu être crée");
+					System.out.println("Erreur, le fichier n'a pas pu Ãªtre crÃ©e");
 					e.getMessage();
 				}
-				//Allouer la page PageID(x,0) au nouveau fichier ( qui devrait être fx.df ) avec WtitePage()
+				//Allouer la page PageID(x,0) au nouveau fichier ( qui devrait Ãªtre fx.df ) avec WtitePage()
 				page = new PageID(x,0);
 				ByteBuffer buffer = ByteBuffer.allocate(DBParams.PageSize);
 				for(int i = 0; i<DBParams.PageSize;i++) {
@@ -64,7 +64,7 @@ public class DiskManager {
 			//Si le fichier a de l'espace disponible
 			else if(file.length() < DBParams.PageSize * DBParams.maxPagesPerFile) {
 				
-				if(file.length()==0) {  				//on vérifie si le fichier est vide ( ne devrait pas arriver normalement )
+				if(file.length()==0) {  				//on vÃ©rifie si le fichier est vide ( ne devrait pas arriver normalement )
 					page = new PageID(x,0);
 				}
 				
@@ -83,7 +83,7 @@ public class DiskManager {
 			x++;
 		}
 		
-		return page; //Devrait retourner le pageID trouvé si un fichier non vide existe dans la boucle précédente
+		return page; //Devrait retourner le pageID trouvÃ© si un fichier non vide existe dans la boucle prÃ©cÃ©dente
 	}
 
 	public static void ReadPage(PageID pageId, ByteBuffer buff) {
@@ -92,6 +92,10 @@ public class DiskManager {
             int f_byte=DBParams.PageSize*pageId.getPageId();
             file.seek(f_byte);
             file.read(buff.array());
+            for (int i = 0; i < buff.capacity(); i++) {
+				System.out.print(buff.array()[i]);
+			}
+            System.out.println();
             file.close();
 		}catch (FileNotFoundException e) {
             System.out.println(e.toString());
@@ -110,7 +114,7 @@ public class DiskManager {
 			file.close();
 		}
 		catch(FileNotFoundException e) {
-			System.out.println("Erreur, le fichier n'a pas pu être trouvé");
+			System.out.println("Erreur, le fichier n'a pas pu Ãªtre trouvÃ©");
 		}
 		catch(IOException e) {
 			System.out.println("Erreur, IN/OUT Exception");

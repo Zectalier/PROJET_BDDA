@@ -35,28 +35,21 @@ public class DiskManager {
 					System.out.println("Erreur, le fichier n'a pas pu être crée");
 					e.getMessage();
 				}
-				//Allouer la page PageID(x,0) au nouveau fichier ( qui devrait être fx.df ) avec WtitePage()
+				
+				//Allouer la page PageID(x,0) au nouveau fichier ( qui devrait être fx.df ) avec WritePage()
 				page = new PageID(x,0);
 				WritePage(page,buffer);
 				found = true;
-				return page; //retourne un PageID (ici normalement PageID(x,0))
+				return page;
 			}
 			
 			//Si le fichier a de l'espace disponible
 			else if(file.length() < DBParams.PageSize * DBParams.maxPagesPerFile) {
-				
-				if(file.length()==0) {  				//on vérifie si le fichier est vide ( ne devrait pas arriver normalement )
-					page = new PageID(x,0);
-				}
-				
 				int n = (int)file.length() / DBParams.PageSize;
 				page = new PageID(x,n);
-				
-				//Allouer la page PageID(x,i) ici avec WritePage()
 				WritePage(page,buffer);
 				found = true;
 			}
-			//Si fx.df ne convient pas, on cherche pour x+1;
 			x++;
 		}
 		return page; //Devrait retourner le pageID trouvé si un fichier non vide existe dans la boucle précédente

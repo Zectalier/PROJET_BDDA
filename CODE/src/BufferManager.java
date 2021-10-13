@@ -11,19 +11,21 @@ public enum BufferManager {
 		ArrayList<Frame> liste = new ArrayList<Frame>();
 		for(int i = 0;i<DBParams.frameCount;i++) {
 			liste.add(new Frame());
+			System.out.println(liste.size());
 		}
+		listFrame = liste;
 	}
 	
 	public BufferManager getInstance() {
         return INSTANCE;
     }
 	
-	public ByteBuffer GetPage(PageID page) {
+	public ByteBuffer getPage(PageID page) {
 		
 		Frame temp = new Frame();
-		int indexmru = DBParams.frameCount;
+		int indexmru = DBParams.frameCount-1;
 		
-		for(int i = listFrame.size(); i<listFrame.size();i++) {
+		for(int i = 0; i<listFrame.size();i++) {
 			//Vérifie si le PageId de la Frame est la même que page et si oui incrémente son PinCount et le met en dernière position de la liste
 			if(listFrame.get(i).getPageId() == page) {
 				temp = listFrame.get(i);
@@ -44,33 +46,45 @@ public enum BufferManager {
 		if(listFrame.get(0).getPageId() == null) {
 			listFrame.remove(0);
 			listFrame.add(new Frame(page));
-			return listFrame.get(DBParams.frameCount).getBuffer();
+			return listFrame.get(DBParams.frameCount-1).getBuffer();
 		}
 		//Sinon retirer la frame MRU et rajouter une nouvelle Frame(page) en fin de liste
 		else {
-			listFrame.remove(indexmru);
-			listFrame.add(new Frame(page));
-			return listFrame.get(DBParams.frameCount).getBuffer();
+			if(listFrame.get(indexmru).getPinCount()!=0) {
+				System.out.println("Pas de frame disponible");
+				return temp.getBuffer();
+			}
+			else {
+				listFrame.remove(indexmru);
+				listFrame.add(new Frame(page));
+				return listFrame.get(DBParams.frameCount-1).getBuffer();
+			}
 		}
 	}
 	
-	public void FreePage(PageID page, boolean valdirty) {
-		for(int i = listFrame.size(); i<listFrame.size();i++) {
+	public void freePage(PageID page, boolean valdirty) {
+		for(int i = 0; i<listFrame.size();i++) {
 			if(listFrame.get(i).getPageId() == page) {
-				Frame temp = listFrame.get(i);
-				temp.setPinCount(temp.getPinCount() - 1);
-				temp.setDirty(valdirty);
-				listFrame.remove(i);
-				listFrame.add(temp);
-				return;
+				if(listFrame.get(i).getPinCount() == 0) {
+					System.out.println("Attention, pin count � 0");
+					return;
+				}
+				else {
+					Frame temp = listFrame.get(i);
+					temp.setPinCount(temp.getPinCount() - 1);
+					temp.setDirty(valdirty);
+					listFrame.remove(i);
+					listFrame.add(temp);
+					return;
+				}
 			}
 		}
 		System.out.println("Erreur, page non trouvé dans le BufferManager");
 		return;
 	}
 	
-	public void FlushAll() {
-		for(int i = listFrame.size(); i<listFrame.size();i++) {
+	public void flushAll() {
+		for(int i = 0; i<listFrame.size();i++) {
 			if(listFrame.get(i).isDirty() == true) {
 				DiskManager.WritePage(listFrame.get(i).getPageId(), listFrame.get(i).getBuffer());
 			}
@@ -79,5 +93,22 @@ public enum BufferManager {
 		for(int i = 0;i<DBParams.frameCount;i++) {
 			listFrame.add(new Frame());
 		}
+	}
+	
+	public void printAll() {
+		System.out.println("//////////////////////////////////////////////////////");
+		for(int i = 0; i<listFrame.size();i++) {
+			System.out.println("Frame "+i);
+			System.out.println("("+listFrame.get(i).getPageId().getFileId()+","+listFrame.get(i).getPageId().getPageId()+")");
+			System.out.println("Pin Count: "+listFrame.get(i).getPinCount());
+			System.out.println("Is dirty ? "+listFrame.get(i).isDirty());
+			System.out.print("Contenu du buffer :");
+			for (int j = 0; j < listFrame.get(i).getBuffer().capacity(); j++) {
+				System.out.print(listFrame.get(i).getBuffer().array()[j]);
+			}
+			System.out.println("");
+			System.out.println("");
+		}
+		System.out.println("//////////////////////////////////////////////////////");
 	}
 }

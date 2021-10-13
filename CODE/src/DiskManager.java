@@ -61,9 +61,6 @@ public class DiskManager {
             int f_byte=DBParams.PageSize*pageId.getPageId();
             file.seek(f_byte);
             file.read(buff.array());
-            for (int i = 0; i < buff.capacity(); i++) {
-				System.out.print(buff.array()[i]);
-			}
             System.out.println();
             file.close();
 		}catch (FileNotFoundException e) {

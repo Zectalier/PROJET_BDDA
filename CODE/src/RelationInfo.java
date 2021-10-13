@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-
+// implementer serializable d'apres la prof pour  .... dans la class Catalog
 public class RelationInfo {
 	
 	private  String nom;

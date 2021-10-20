@@ -3,34 +3,59 @@ import java.util.ArrayList;
 
 // the teacher told us to implements Serializable in RealtionInfi look up for Andrio for more information
 public class RelationInfo implements Serializable {
-	
-	private  String nom;
+
+	private String nom;
 	private int nb_col;
-	private ArrayList<ColInfo>liste;
-	
-	public RelationInfo(final String nom, final int nb_col) {
-		this.nom=nom;
-		this.nb_col=nb_col;
-		liste = new ArrayList<ColInfo>();
+	private ArrayList<ColInfo> liste;
+	private PageID headerPageId;
+	private int recordSize;
+	private int slotCount;
+
+	public RelationInfo(final String nom, final int nb_col, ArrayList<ColInfo> liste, PageID headerPageId) {
+		this.nom = nom;
+		this.nb_col = nb_col;
+		this.headerPageId = headerPageId;
+		this.liste = liste;
+		recordSize = 0;
+		for (ColInfo icol : liste) {
+			if (icol.getType_col().equals("int") || icol.getType_col().equals("float")) {
+				recordSize += 4;
+			}
+			else {
+				recordSize += 2*Integer.parseInt(icol.getType_col().substring(6));
+			}
+		}
+		// PageSize
+		slotCount = (DBParams.PageSize-16)/(recordSize+1);
 	}
-	
+
 	public String getNom() {
 		return nom;
 	}
-	
-	public void setNom(final String nom) {
-		this.nom=nom;
+
+	public void addCol(String nom, String type) {
+		if (type.equals("int") || type.equals("float")) {
+			recordSize += 4;
+		}
+		else {
+			recordSize += 2*Integer.parseInt(type.substring(6));
+		}
+		slotCount = (DBParams.PageSize-16)/(recordSize+1);
 	}
-	
+
+	public void setNom(final String nom) {
+		this.nom = nom;
+	}
+
 	public int getNb_col() {
 		return nb_col;
 	}
-	
+
 	public void setNb_col(final int nb_col) {
-		this.nb_col=nb_col;
+		this.nb_col = nb_col;
 	}
-	
-	public ArrayList<ColInfo> getListe(){
+
+	public ArrayList<ColInfo> getListe() {
 		return liste;
 	}
 }

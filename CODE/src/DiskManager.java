@@ -72,7 +72,7 @@ public class DiskManager {
 
 	public static void WritePage(PageID pageId, ByteBuffer buff) {
 		try {
-			RandomAccessFile file = new RandomAccessFile(DBParams.DBPath+pageId.getFileId()+".df","rw");
+			RandomAccessFile file = new RandomAccessFile(DBParams.DBPath+"f"+pageId.getFileId()+".df","rw");
 			byte[] array = new byte[buff.remaining()];
 			buff.get(array);
 			file.seek(pageId.getPageId()*DBParams.PageSize);

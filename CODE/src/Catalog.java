@@ -27,7 +27,7 @@ public class Catalog {
 		    object.close();
 			
 		}catch(IOException e) {
-			System.out.println("Erreur, le fichier n'a pas pu Ãªtre crÃ©e");
+			System.out.println("Erreur, le fichier n'a pas pu être crée");
 			e.getMessage();
 		}catch(ClassNotFoundException e) {
 			System.out.println("Erreur, classe inexistante");
@@ -45,7 +45,7 @@ public class Catalog {
 			object.close();
 			
 		}catch(IOException e) {
-			System.out.println("Erreur, le fichier n'a pas pu Ãªtre crÃ©e");
+			System.out.println("Erreur, le fichier n'a pas pu être crée");
 			e.getMessage();
 		}
 	}

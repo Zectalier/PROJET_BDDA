@@ -34,4 +34,3 @@ public class RelationInfo implements Serializable {
 		return liste;
 	}
 }
-

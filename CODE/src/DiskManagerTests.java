@@ -24,6 +24,9 @@ public class DiskManagerTests {
 		ByteBuffer buffer = ByteBuffer.allocate(DBParams.PageSize);
 		System.out.println("Lecture de la page 1:");
 		DiskManager.ReadPage(page,buffer);
+		for (int i = 0; i < buffer.capacity(); i++) {
+			System.out.print(buffer.array()[i]);
+		}
 		byte[] array = new byte[buffer.remaining()];
 		buffer.get(array);
 		//System.out.println(Arrays.toString(array));
@@ -53,8 +56,12 @@ public class DiskManagerTests {
         //Test écriture de la page2 avec un tableau de byte rempli de 1
         DiskManager.WritePage(page2,buffer1);
         //Test lecture de la page 2 modifiée
-        System.out.println("Lecture de la page2: ");
+        System.out.println("");
+        System.out.println("Lecture de la page 2: ");
         DiskManager.ReadPage(page2, buffer2);
+        for (int i = 0; i < buffer2.capacity(); i++) {
+			System.out.print(buffer2.array()[i]);
+		}
 		
 		
 	}

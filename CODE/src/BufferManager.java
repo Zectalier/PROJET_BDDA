@@ -4,9 +4,13 @@ import java.util.ArrayList;
 public enum BufferManager {
 
 	INSTANCE;
-	
+
+	public BufferManager getInstance() {
+		return INSTANCE;
+	}
+
 	private ArrayList<Frame> listFrame;
-	
+
 	private BufferManager(){
 		ArrayList<Frame> liste = new ArrayList<Frame>();
 		for(int i = 0;i<DBParams.frameCount;i++) {
@@ -15,16 +19,12 @@ public enum BufferManager {
 		}
 		listFrame = liste;
 	}
-	
-	public BufferManager getInstance() {
-        return INSTANCE;
-    }
-	
+
 	public ByteBuffer getPage(PageID page) {
-		
+
 		Frame temp = new Frame();
 		int indexmru = DBParams.frameCount-1;
-		
+
 		for(int i = 0; i<listFrame.size();i++) {
 			//Vérifie si le PageId de la Frame est la même que page et si oui incrémente son PinCount et le met en dernière position de la liste
 			if(listFrame.get(i).getPageId() == page) {
@@ -34,7 +34,7 @@ public enum BufferManager {
 				listFrame.add(temp);
 				return temp.getBuffer();
 			}
-			
+
 			//Sinon, vérifie si la frame à listFrame[i] est la dernière frame MRU qui à un PinCount à 0
 			else {
 				if(listFrame.get(i).getPinCount() == 0) {
@@ -55,13 +55,17 @@ public enum BufferManager {
 				return temp.getBuffer();
 			}
 			else {
+				//Si la frame MRU a retir� est dirty, actualise ses donn�es dans la page de donn�es
+				if(listFrame.get(indexmru).isDirty() == true) {
+					DiskManager.WritePage(listFrame.get(indexmru).getPageId(), listFrame.get(indexmru).getBuffer());
+				}
 				listFrame.remove(indexmru);
 				listFrame.add(new Frame(page));
 				return listFrame.get(DBParams.frameCount-1).getBuffer();
 			}
 		}
 	}
-	
+
 	public void freePage(PageID page, boolean valdirty) {
 		for(int i = 0; i<listFrame.size();i++) {
 			if(listFrame.get(i).getPageId() == page) {
@@ -73,7 +77,7 @@ public enum BufferManager {
 					Frame temp = listFrame.get(i);
 					temp.setPinCount(temp.getPinCount() - 1);
 					temp.setDirty(valdirty);
-					listFrame.remove(i);
+					listFrame.remove(temp);
 					listFrame.add(temp);
 					return;
 				}
@@ -82,7 +86,7 @@ public enum BufferManager {
 		System.out.println("Erreur, page non trouvé dans le BufferManager");
 		return;
 	}
-	
+
 	public void flushAll() {
 		for(int i = 0; i<listFrame.size();i++) {
 			if(listFrame.get(i).isDirty() == true) {
@@ -94,7 +98,7 @@ public enum BufferManager {
 			listFrame.add(new Frame());
 		}
 	}
-	
+
 	public void printAll() {
 		System.out.println("//////////////////////////////////////////////////////");
 		for(int i = 0; i<listFrame.size();i++) {

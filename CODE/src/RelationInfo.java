@@ -25,7 +25,7 @@ public class RelationInfo implements Serializable {
 				recordSize += 2*Integer.parseInt(icol.getType_col().substring(6));
 			}
 		}
-		// PageSize
+		// -16 Pour la taille des page_id, 2 int (2*4) pour chaque page_id, +1 car chaque record a un octet qui donne son statut
 		slotCount = (DBParams.PageSize-16)/(recordSize+1);
 	}
 
@@ -57,5 +57,9 @@ public class RelationInfo implements Serializable {
 
 	public ArrayList<ColInfo> getListe() {
 		return liste;
+	}
+
+	public PageID getHeaderPageId() {
+		return headerPageId;
 	}
 }

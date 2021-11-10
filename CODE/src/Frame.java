@@ -6,7 +6,7 @@ public class Frame {
 	private PageID pageId;
 	private int pinCount;
 	private boolean dirty;
-	
+
 	public Frame(PageID pageId) {
 		this.pinCount = 1;
 		this.dirty = false;
@@ -21,7 +21,7 @@ public class Frame {
 		this.pageId = null;
 		buffer = null;
 	}
-	
+
 	public ByteBuffer getBuffer() {
 		return buffer;
 	}
@@ -53,5 +53,5 @@ public class Frame {
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
 	}
-	
+
 }

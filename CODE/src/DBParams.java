@@ -5,5 +5,5 @@ public class DBParams {
 	public static int PageSize;
 	public static int maxPagesPerFile;
 	public static int frameCount;
-	
+
 }

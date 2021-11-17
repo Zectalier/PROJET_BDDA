@@ -17,7 +17,7 @@ public class Record {
 				buff.putInt(Integer.parseInt(values.get(i)));
 			} else if (relInfo.getListe().get(i).getType_col().equals("float")) {
 				buff.putFloat(Float.parseFloat(values.get(i)));
-			} else {
+			} else if (relInfo.getListe().get(i).getType_col().substring(0,6).equals("string")) {
 				for (int k = 0; k < values.get(i).length(); k++) {
 					buff.putChar(values.get(i).charAt(k));
 				}
@@ -27,15 +27,15 @@ public class Record {
 
 	void readFromBuffer(ByteBuffer buff, int position) {
 		buff.position(position);
-		int dernier_element_string;
+		int string_length;
 		for (int i = 0; i < relInfo.getNb_col(); i++) {
 			if (relInfo.getListe().get(i).getType_col().equals("int")) {
 				System.out.print(buff.getInt() + " ");
 			} else if (relInfo.getListe().get(i).getType_col().equals("float")) {
 				System.out.print(buff.getFloat() + " ");
-			} else {
-				dernier_element_string = relInfo.getListe().get(i).getType_col().length() - 1;
-				for (int j = 0; j < (int) relInfo.getListe().get(i).getType_col().charAt(dernier_element_string); j++) {
+			} else if (relInfo.getListe().get(i).getType_col().substring(0,6).equals("string")){
+				string_length = Integer.parseInt(relInfo.getListe().get(i).getType_col().substring(6));
+				for (int j = 0; j < string_length; j++) {
 					System.out.println(buff.getChar());
 				}
 			}

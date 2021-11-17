@@ -42,4 +42,8 @@ public class Record {
 		}
 	}
 
+	public RelationInfo getRelationInfo() {
+		return relInfo;
+	}
+	
 }

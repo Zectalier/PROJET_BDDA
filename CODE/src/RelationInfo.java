@@ -62,4 +62,12 @@ public class RelationInfo implements Serializable {
 	public PageID getHeaderPageId() {
 		return headerPageId;
 	}
+	
+	public int getSlotCount() {
+		return slotCount;
+	}
+	
+	public int getRecordSize() {
+		return recordSize;
+	}
 }

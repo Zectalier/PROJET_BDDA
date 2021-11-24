@@ -1,7 +1,6 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 
-// the teacher told us to implements Serializable in RealtionInfi look up for Andrio for more information
 public class RelationInfo implements Serializable {
 
 	private String nom;
@@ -69,5 +68,19 @@ public class RelationInfo implements Serializable {
 	
 	public int getRecordSize() {
 		return recordSize;
+	}
+	
+	// retourne un string avec les informations de la relationInfo
+	public String toString() {
+	StringBuffer sb = new StringBuffer("");
+	sb.append("nom: "+nom+" ");
+	sb.append("nb_col: "+nb_col+" ");
+	for (int i = 0; i < liste.size(); i++) {
+		sb.append("nom_col"+i+": "+liste.get(i).getNom_col());
+		sb.append("type_col"+i+": "+liste.get(i).getType_col());
+	}
+	sb.append(" pageID: "+headerPageId.getPageId());
+	sb.append(" FileID: "+headerPageId.getFileId());
+	return sb.toString();
 	}
 }

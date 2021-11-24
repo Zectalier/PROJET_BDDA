@@ -45,7 +45,6 @@ public enum Catalog {
 	}
 
 	public void AddRelation(RelationInfo liste) {
-		System.out.println("ok5");
 		for (int i = 0; i <tableau_rel_info.size(); i++) {
 			System.out.println(tableau_rel_info.get(i));
 		}

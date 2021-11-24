@@ -30,14 +30,16 @@ public class Record {
 		int string_length;
 		for (int i = 0; i < relInfo.getNb_col(); i++) {
 			if (relInfo.getListe().get(i).getType_col().equals("int")) {
-				System.out.print(buff.getInt() + " ");
+				values.add(Integer.toString(buff.getInt()));
 			} else if (relInfo.getListe().get(i).getType_col().equals("float")) {
-				System.out.print(buff.getFloat() + " ");
+				values.add(Float.toString(buff.getFloat()));
 			} else if (relInfo.getListe().get(i).getType_col().substring(0,6).equals("string")){
 				string_length = Integer.parseInt(relInfo.getListe().get(i).getType_col().substring(6));
+				StringBuilder sb = new StringBuilder();
 				for (int j = 0; j < string_length; j++) {
-					System.out.println(buff.getChar());
+					sb.append(buff.getChar());
 				}
+				values.add(sb.toString());
 			}
 		}
 	}

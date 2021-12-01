@@ -3,6 +3,9 @@ import java.util.ArrayList;
 
 public class RelationInfo implements Serializable {
 
+	// i add line 8 cause i got a warning on line 4
+	private static final long serialVersionUID = 1L;
+	
 	private String nom;
 	private int nb_col;
 	private ArrayList<ColInfo> liste;
@@ -10,7 +13,7 @@ public class RelationInfo implements Serializable {
 	private int recordSize;
 	private int slotCount;
 
-	public RelationInfo(final String nom, final int nb_col, ArrayList<ColInfo> liste, PageID headerPageId) {
+	public RelationInfo(String nom,int nb_col, ArrayList<ColInfo> liste, PageID headerPageId) {
 		this.nom = nom;
 		this.nb_col = nb_col;
 		this.headerPageId = headerPageId;
@@ -42,7 +45,7 @@ public class RelationInfo implements Serializable {
 		slotCount = (DBParams.PageSize-16)/(recordSize+1);
 	}
 
-	public void setNom(final String nom) {
+	public void setNom(String nom) {
 		this.nom = nom;
 	}
 
@@ -50,7 +53,7 @@ public class RelationInfo implements Serializable {
 		return nb_col;
 	}
 
-	public void setNb_col(final int nb_col) {
+	public void setNb_col(int nb_col) {
 		this.nb_col = nb_col;
 	}
 

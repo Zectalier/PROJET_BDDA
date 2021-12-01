@@ -12,7 +12,7 @@ public enum DBManager {
 	}
 
 	public static void ProcessCommand(String reponse) {
-		String[] chaine = reponse.split(" ()");
+		String[] chaine = reponse.split(" ");
 		switch(chaine[0]){
 			case "CREATE":
 				CreateRelationCommand create = new CreateRelationCommand(reponse);

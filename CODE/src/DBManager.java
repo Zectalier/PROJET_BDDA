@@ -12,7 +12,14 @@ public enum DBManager {
 		Catalog.INSTANCE.Finish();
 	}
 	
-	public void ProcessCommand() {
+	public static void ProcessCommand(String reponse) {
+		String[] chaine = reponse.split(" ");
+		switch(chaine[0]){
+			case "CREATE":
+				CreateRelationCommand create = new CreateRelationCommand(reponse);
+				create.Execute();
+				break;
+		}
 	}
 	
 	public void DropDB() {

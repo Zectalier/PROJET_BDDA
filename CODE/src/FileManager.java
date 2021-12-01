@@ -1,4 +1,5 @@
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 public enum FileManager {
 
@@ -54,7 +55,7 @@ public enum FileManager {
 
 		ByteBuffer buff = BufferManager.INSTANCE.getPage(headerPage);
 		buff.position(0);
-		//On rÃ©cupÃ¨re les donnÃ©es de la page suivante du headerPage
+		//On récupère les données de la page suivante du headerPage
 		int nextFileId = buff.getInt();
 		int nextPageId = buff.getInt();
 		buff.position(0);
@@ -70,8 +71,8 @@ public enum FileManager {
 		buff.putInt(nextPageId);
 		BufferManager.INSTANCE.freePage(pageId, true);
 
-		//nextPage correspond Ã  la page qui Ã©tait Ã  l'origine la page suivante du headerPage
-		//On va changer cette page en mettant le PageID de la nouvelle page insÃ©rÃ© comme page prÃ©cÃ©dente sauf si c'est la page de fileID -1 (page factice)
+		//nextPage correspond à la page qui était à l'origine la page suivante du headerPage
+		//On va changer cette page en mettant le PageID de la nouvelle page inséré comme page précédente sauf si c'est la page de fileID -1 (page factice)
 		if(nextFileId != -1) {
 			PageID nextPage = new PageID(nextFileId, nextPageId);
 			buff = BufferManager.INSTANCE.getPage(nextPage);
@@ -87,7 +88,7 @@ public enum FileManager {
 		PageID headerPage = relInfo.getHeaderPageId();
 		PageID freePageId;
 		ByteBuffer buff = BufferManager.INSTANCE.getPage(headerPage);
-		buff.rewind();
+		buff.position(0);
 		int nextFileId = buff.getInt();
 		int nextPageId = buff.getInt();
 		if(nextFileId == -1) {
@@ -112,11 +113,11 @@ public enum FileManager {
 		int position = -1;
 		int slotId = -1;
 		boolean found = false;
-		boolean islast = false; //boolean pour vÃ©rifier si le slot trouvÃ© est le dernier libre
+		boolean islast = false; //boolean pour vérifier si le slot trouvé est le dernier libre
 		
 		int i = 0;
 		while(i < slotCount){
-			if(buff.get(i+16) == 0 && !found) { //ici 16 car la bytemap dÃ©bute aprÃ¨s les deux int de chaque pageId 
+			if(buff.get(i+16) == (byte)0 && !found) { //ici 16 car la bytemap débute après les deux int de chaque pageId 
 				buff.position(i+16);
 				buff.put((byte)1);
 				found = true;
@@ -125,7 +126,7 @@ public enum FileManager {
 				position = 16+slotCount+i*rec.getRelationInfo().getRecordSize();
 				slotId = i;
 			}
-			else if(buff.get(i+16) == 0 && found) { //si on trouve un autre slot Ã  0, le slot qu'on a choisi n'est pas le dernier libre, on sort de la boucle
+			else if(buff.get(i+16) == (byte)0 && found) { //si on trouve un autre slot à 0, le slot qu'on a choisi n'est pas le dernier libre, on sort de la boucle
 				islast = false;
 				break;
 			}
@@ -133,41 +134,41 @@ public enum FileManager {
 		
 		if(position!=-1) {
 			rec.writeToBuffer(buff, position);
-			if(islast == true) { //si le slot Ã©tait le dernier libre, on bouge la page dans la liste des pages remplies
+			if(islast == true) { //si le slot était le dernier libre, on bouge la page dans la liste des pages remplies
 				buff.position(0);
-				//RÃ©cuperons les pages (pas remplies) qui Ã©taient avant et aprÃ¨s la nouvelle page dÃ©sormais remplie
+				//Récuperons les pages (pas remplies) qui étaient avant et après la nouvelle page désormais remplie
 				int oldPrevFileId = buff.getInt();
 				int oldPrevPageId = buff.getInt();
 				int oldNextFileId = buff.getInt();
 				int oldNextPageId = buff.getInt();
 				PageID oldPrevPage = new PageID(oldPrevFileId, oldPrevPageId);
 				PageID oldNextPage = new PageID(oldNextFileId, oldNextPageId);
-				//RemplaÃ§ons les anciens pointeurs par les nouveaux (la headerpage et la page aprÃ¨s l'headerpage)
+				//Remplaçons les anciens pointeurs par les nouveaux (la headerpage et la page après l'headerpage)
 				buff.position(0);
 				buff.putInt(headerPage.getFileId());
 				buff.putInt(headerPage.getPageId());
 				buff.putInt(nextFileId);
 				buff.putInt(nextPageId);
 				BufferManager.INSTANCE.freePage(pageId, true);
-				//RemplaÃ§ons dans le headerPage la page remplie suivante par notre nouvelle page
+				//Remplaçons dans le headerPage la page remplie suivante par notre nouvelle page
 				buff = BufferManager.INSTANCE.getPage(headerPage);
 				buff.position(8);
 				buff.putInt(pageId.getFileId());
 				buff.putInt(pageId.getPageId());
 				BufferManager.INSTANCE.freePage(headerPage, true);
-				//RemplaÃ§ons les pointeurs de la page rempli qui Ã©tait Ã  l'origine aprÃ¨s la headerpage par ceux de notre nouvelle page remplie
+				//Remplaçons les pointeurs de la page rempli qui était à l'origine après la headerpage par ceux de notre nouvelle page remplie
 				buff = BufferManager.INSTANCE.getPage(nextPage);
 				buff.position(0);
 				buff.putInt(pageId.getFileId());
 				buff.putInt(pageId.getPageId());
 				BufferManager.INSTANCE.freePage(nextPage, true);
-				//RemplaÃ§ons les pointeurs de la headerpage
+				//Remplaçons les pointeurs de la headerpage
 				buff = BufferManager.INSTANCE.getPage(headerPage);
 				buff.position(8);
 				buff.putInt(pageId.getFileId());
 				buff.putInt(pageId.getPageId());
 				BufferManager.INSTANCE.freePage(headerPage, true);
-				//Il faut raccorder l'ancienne page prÃ©cÃ©dente libre a l'ancienne page suivante libre
+				//Il faut raccorder l'ancienne page précédente libre a l'ancienne page suivante libre
 				buff = BufferManager.INSTANCE.getPage(oldPrevPage);
 				buff.position(8);
 				buff.putInt(oldNextFileId);
@@ -184,9 +185,67 @@ public enum FileManager {
 			}
 		}
 		else {
-			System.out.println("Erreur, pas de slot libre trouvÃ©");
+			System.out.println("Erreur, pas de slot libre trouvé");
 			BufferManager.INSTANCE.freePage(pageId, false);
 		}
 		return new Rid(pageId, slotId);
+	}
+	
+	public ArrayList<Record> getRecordsInDataPage(RelationInfo relinfo, PageID pageId) {
+		ArrayList<Record> listRec = new ArrayList<Record>();
+		Record rec;
+		ByteBuffer buff = BufferManager.INSTANCE.getPage(pageId);
+		for(int position = 16; position<16+relinfo.getSlotCount();position++) {
+			rec = new Record(relinfo);
+			if(buff.get(position)==(byte)1) {
+				rec.readFromBuffer(buff, (position-16)*relinfo.getRecordSize()+relinfo.getSlotCount()+16);
+			}
+			listRec.add(rec);
+		}
+		BufferManager.INSTANCE.freePage(pageId, false);
+		return listRec;
+	}
+	
+	public Rid insertRecordIntoRelation(RelationInfo relinfo, Record rec) {
+		PageID freePage = getFreeDataPage(relinfo);
+		return writeRecordToDataPage(relinfo,rec,freePage);
+	}
+	
+	public ArrayList<Record> getAllRecords(RelationInfo relinfo) {
+		ArrayList<Record> listRec = new ArrayList<Record>();
+		PageID headerPage = relinfo.getHeaderPageId();
+		ByteBuffer buff = BufferManager.INSTANCE.getPage(headerPage);
+		buff.position(0);
+		int nextFileId = buff.getInt();
+		int nextPageId = buff.getInt();
+		BufferManager.INSTANCE.freePage(headerPage, false);
+		PageID nextPageID = new PageID(nextFileId, nextPageId);
+		listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+		while(nextFileId!=-1) {
+			buff = BufferManager.INSTANCE.getPage(nextPageID);
+			buff.position(8);
+			nextFileId = buff.getInt();
+			nextPageId = buff.getInt();
+			BufferManager.INSTANCE.freePage(headerPage, false);
+			nextPageID = new PageID(nextFileId, nextPageId);
+			listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+		}
+		buff = BufferManager.INSTANCE.getPage(headerPage);
+		buff.position(8);
+		nextFileId = buff.getInt();
+		nextPageId = buff.getInt();
+		BufferManager.INSTANCE.freePage(headerPage, false);
+		nextPageID = new PageID(nextFileId, nextPageId);
+		listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+		while(nextFileId!=-1) {
+			buff = BufferManager.INSTANCE.getPage(nextPageID);
+			buff.position(8);
+			nextFileId = buff.getInt();
+			nextPageId = buff.getInt();
+			BufferManager.INSTANCE.freePage(headerPage, false);
+			nextPageID = new PageID(nextFileId, nextPageId);
+			listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+		}
+		return listRec;
 	}
 }

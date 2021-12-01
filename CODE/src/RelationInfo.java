@@ -3,9 +3,10 @@ import java.util.ArrayList;
 
 public class RelationInfo implements Serializable {
 
-	// i add line 8 cause i got a warning on line 4
-	private static final long serialVersionUID = 1L;
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2196028207559318797L;
 	private String nom;
 	private int nb_col;
 	private ArrayList<ColInfo> liste;
@@ -13,7 +14,7 @@ public class RelationInfo implements Serializable {
 	private int recordSize;
 	private int slotCount;
 
-	public RelationInfo(String nom,int nb_col, ArrayList<ColInfo> liste, PageID headerPageId) {
+	public RelationInfo(String nom, int nb_col, ArrayList<ColInfo> liste, PageID headerPageId) {
 		this.nom = nom;
 		this.nb_col = nb_col;
 		this.headerPageId = headerPageId;

@@ -15,7 +15,6 @@ public enum BufferManager {
 		ArrayList<Frame> liste = new ArrayList<Frame>();
 		for(int i = 0;i<DBParams.frameCount;i++) {
 			liste.add(new Frame());
-			System.out.println(liste.size());
 		}
 		listFrame = liste;
 	}
@@ -99,6 +98,14 @@ public enum BufferManager {
 		}
 	}
 
+	public void reset() {
+		ArrayList<Frame> liste = new ArrayList<Frame>();
+		for(int i = 0;i<DBParams.frameCount;i++) {
+			liste.add(new Frame());
+		}
+		listFrame = liste;
+	}
+	
 	public void printAll() {
 		System.out.println("//////////////////////////////////////////////////////");
 		for(int i = 0; i<listFrame.size();i++) {

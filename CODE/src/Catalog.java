@@ -25,7 +25,7 @@ public enum Catalog {
 			object.close();
 
 		} catch (IOException e) {
-			System.out.println("Erreur, le fichier n'a pas pu Ãªtre trouvÃ©e");
+			System.out.println("Erreur, le fichier n'a pas pu être trouvée");
 			e.getMessage();
 		} catch (ClassNotFoundException e) {
 			System.out.println("Erreur, classe inexistante");
@@ -57,5 +57,9 @@ public enum Catalog {
 		tableau_rel_info = new ArrayList<RelationInfo>();
 		File catalogFile = new File(DBParams.DBPath + "Catalog.def");
 		catalogFile.delete();
+	}
+	
+	public ArrayList<RelationInfo> getTableauRelInfo(){
+		return tableau_rel_info;
 	}
 }

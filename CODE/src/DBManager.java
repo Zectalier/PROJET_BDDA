@@ -9,6 +9,7 @@ public enum DBManager {
 	}
 	
 	public void Finish() {
+		BufferManager.INSTANCE.flushAll();
 		Catalog.INSTANCE.Finish();
 	}
 	

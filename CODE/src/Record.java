@@ -48,4 +48,8 @@ public class Record {
 		return relInfo;
 	}
 	
+	public ArrayList<String> getValues(){
+		return values;
+	}
+	
 }

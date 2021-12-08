@@ -19,7 +19,12 @@ public enum Catalog {
 	@SuppressWarnings("unchecked")
 	public void Init() {
 		try {
-			FileInputStream tab = new FileInputStream(new File(DBParams.DBPath + "Catalog.def"));
+			File file = new File(DBParams.DBPath + "Catalog.def");
+			FileInputStream tab = new FileInputStream(file);
+			if(file.length()==0) {
+				tab.close();
+				return;
+			}
 			ObjectInputStream object = new ObjectInputStream(tab);
 			tableau_rel_info= (ArrayList<RelationInfo>) (object.readObject());
 			object.close();
@@ -61,5 +66,13 @@ public enum Catalog {
 	
 	public ArrayList<RelationInfo> getTableauRelInfo(){
 		return tableau_rel_info;
+	}
+	
+	public RelationInfo findRelation(String nomRelation) {
+		for (int i = 0; i < tableau_rel_info.size(); i++) {
+			if(tableau_rel_info.get(i).getNom().equals(nomRelation))
+				return tableau_rel_info.get(i);
+		}
+		return null;
 	}
 }

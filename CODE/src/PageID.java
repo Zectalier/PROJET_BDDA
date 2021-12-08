@@ -21,4 +21,18 @@ public class PageID implements Serializable{
 	public int getPageId() {
 		return this.PageIdx;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		
+		if(o == this) {
+            return true;
+        }
+		
+		if(FileIdx==((PageID) o).getFileId()&&PageIdx==((PageID) o).getPageId()) {
+			return true;
+		}
+		
+		return false;
+	}
 }

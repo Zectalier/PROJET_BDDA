@@ -18,7 +18,7 @@ public enum DBManager {
 	}
 
 	public void ProcessCommand(String reponse) {
-		String[] chaine = reponse.split(" ()");
+		String[] chaine = reponse.split(" ");
 		switch (chaine[0]) {
 			case "CREATE" :
 				CreateRelationCommand create = new CreateRelationCommand(reponse);
@@ -55,7 +55,10 @@ public enum DBManager {
 	}
 
 	public void Insert(String reponse) {
-		String[] chaine = reponse.split(" ()");
+		reponse=reponse.replace("(","");
+		reponse=reponse.replace(")","");
+		String[] chaine = reponse.split(" ");
+		
 		try {
 			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[2]);
 			PageID freePage = FileManager.INSTANCE.getFreeDataPage(relInfo);
@@ -71,7 +74,7 @@ public enum DBManager {
 	}
 	
 	public void BatchInsert(String reponse) {
-		String[] chaine = reponse.split(" ()");
+		String[] chaine = reponse.split(" ");
 		try {
 			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[2]);
 			PageID freePage = FileManager.INSTANCE.getFreeDataPage(relInfo);

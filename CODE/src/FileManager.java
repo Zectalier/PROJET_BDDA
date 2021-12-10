@@ -134,6 +134,7 @@ public enum FileManager {
 				islast = false;
 				break;
 			}
+			i++;
 		}
 		
 		if(position!=-1) {

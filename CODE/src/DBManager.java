@@ -107,8 +107,141 @@ public enum DBManager {
 		}
 	}
 	
-	public boolean VerifCondition(ArrayList<Record> record) {
-		
+	private int chercheIndiceColonne(RelationInfo relInfo, String string) {
+		for (int i = 0; i < relInfo.getListe().size(); i++) {
+			if(relInfo.getListe().get(i).getNom_col().equals(string)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	private boolean VerifCondition(String chaine,Record record, RelationInfo relInfo) {
+		String[]condition=chaine.split("<>");
+		int indice;
+		if(condition.length==2) {
+			indice=chercheIndiceColonne(relInfo,condition[1]);
+			if(!record.getValues().get(indice).equals(condition[1]))
+				return true;
+			else
+				return false;
+		}
+		condition=chaine.split("<=");
+		if(condition.length==2) {
+			indice=chercheIndiceColonne(relInfo,condition[1]);
+			String type = relInfo.getListe().get(indice).getType_col();
+			switch(type) {
+				case "int":
+					if(Integer.parseInt(record.getValues().get(indice))<=(Integer.parseInt(chaine))) 
+						return true;
+					else
+						return false;
+				case "float":
+					if(Float.parseFloat(record.getValues().get(indice))<=(Float.parseFloat(chaine)))
+						return true;
+					else
+						return false;
+				default:
+					if(record.getValues().get(indice).compareTo(chaine)<=0)
+						return true;
+					else
+						return false;
+			}
+		}
+		condition=chaine.split(">=");
+		if(condition.length==2) {
+			indice=chercheIndiceColonne(relInfo,condition[1]);
+			String type = relInfo.getListe().get(indice).getType_col();
+			switch(type) {
+				case "int":
+					if(Integer.parseInt(record.getValues().get(indice))>=(Integer.parseInt(chaine))) 
+						return true;
+					else
+						return false;
+				case "float":
+					if(Float.parseFloat(record.getValues().get(indice))>=(Float.parseFloat(chaine)))
+						return true;
+					else
+						return false;
+				default:
+					if(record.getValues().get(indice).compareTo(chaine)>=0)
+						return true;
+					else
+						return false;
+			}
+		}
+		condition=chaine.split(">");
+		if(condition.length==2) {
+			indice=chercheIndiceColonne(relInfo,condition[1]);
+			String type = relInfo.getListe().get(indice).getType_col();
+			switch(type) {
+				case "int":
+					if(Integer.parseInt(record.getValues().get(indice))>(Integer.parseInt(chaine))) 
+						return true;
+					else
+						return false;
+				case "float":
+					if(Float.parseFloat(record.getValues().get(indice))>(Float.parseFloat(chaine)))
+						return true;
+					else
+						return false;
+				default:
+					if(record.getValues().get(indice).compareTo(chaine)>0)
+						return true;
+					else
+						return false;
+			}
+		}
+		condition=chaine.split("<");
+		if(condition.length==2) {
+			indice=chercheIndiceColonne(relInfo,condition[1]);
+			String type = relInfo.getListe().get(indice).getType_col();
+			switch(type) {
+				case "int":
+					if(Integer.parseInt(record.getValues().get(indice))<(Integer.parseInt(chaine))) 
+						return true;
+					else
+						return false;
+				case "float":
+					if(Float.parseFloat(record.getValues().get(indice))<(Float.parseFloat(chaine)))
+						return true;
+					else
+						return false;
+				default:
+					if(record.getValues().get(indice).compareTo(chaine)<0)
+						return true;
+					else
+						return false;
+			}
+		}
+		condition=chaine.split("<");
+		indice=chercheIndiceColonne(relInfo,condition[1]);
+		String type = relInfo.getListe().get(indice).getType_col();
+		switch(type) {
+			case "int":
+				if(Integer.parseInt(record.getValues().get(indice))<(Integer.parseInt(chaine))) 
+					return true;
+				else
+					return false;
+			case "float":
+				if(Float.parseFloat(record.getValues().get(indice))<(Float.parseFloat(chaine)))
+					return true;
+				else
+					return false;
+			default:
+				if(record.getValues().get(indice).compareTo(chaine)<0)
+					return true;
+				else
+					return false;
+		}
+	}
+	
+	private boolean VerifToutesConditions(ArrayList<String>conditions,Record record, RelationInfo relInfo) {
+		for (int i = 0; i < conditions.size(); i++) {
+			if(!VerifCondition(conditions.get(i),record,relInfo))
+				return false;
+			
+		}
 		return true;
 	}
 	
@@ -130,30 +263,22 @@ public enum DBManager {
 					System.out.println("");
 				}
 			}else{
+				ArrayList<String> conditions = new ArrayList<String>();
+				int compteur=0;
 				for (int i = 5; i < chaine.length; i+=2) {
-					String[] condition = chaine[i].split("<>");
-					if(condition.length==2) {
-						int indice = 0;
-						String type = null;
-						for (int k=0; k<relInfo.getListe().size();k++) {
-							if(relInfo.getListe().get(k).getNom_col().equals(condition[0])) {
-								indice = k;
-								type = relInfo.getListe().get(k).getType_col();
-							}
-						}
-						for (int y = 0; y < record.size(); y++) {
-							for (int j = 0; j < record.get(y).getValues().size(); j++) {
-								if(type.equals("int") || type.equals("float") ) {
-									if(record.get(y).getValues().get(indice)!=(Interger.parseInt(option1))) {
-										
-									}
-								}
-								System.out.print(record.get(y).getValues().get(j)+";");
-							}
-							System.out.println("");
-						}
-					}
+					conditions.add(chaine[i]);
 				}
+				for (int i = 0; i < record.size(); i++) {
+					if(VerifToutesConditions(conditions, record.get(i), relInfo)) {
+						for (int j = 0; j < record.get(i).getValues().size(); j++) {
+							System.out.print(record.get(i).getValues().get(j)+";");
+							compteur++;
+						}
+						System.out.println("");
+					}
+					
+				}
+				System.out.println("Total Record = " +compteur);
 			}
 			
 		}catch(NoSuchElementException e) {

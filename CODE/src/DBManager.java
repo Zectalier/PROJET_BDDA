@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 public enum DBManager {
@@ -32,6 +33,9 @@ public enum DBManager {
 				break;
 			case "BATCHINSERT":
 				BatchInsert(reponse);
+				break;
+			case "SELECTMONO":
+				SelectMono(reponse);
 				break;
 			default:
 				System.err.println("Erreur : commande inconnue");
@@ -102,6 +106,72 @@ public enum DBManager {
 			e.printStackTrace();
 		}
 	}
+	
+	public boolean VerifCondition(ArrayList<Record> record) {
+		
+		return true;
+	}
+	
+	public void SelectMono(String reponse) {
+		String[] chaine = reponse.split(" ");
+		try {
+			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[3]);
+			ArrayList<Record> record = FileManager.INSTANCE.getAllRecords(relInfo);
+			if(chaine.length==3) {
+				if(chaine[1].equals("*")){
+					for (int i = 0; i < record.size(); i++) {
+						for (int j = 0; j < record.get(i).getValues().size(); j++) {
+							System.out.print(record.get(i).getValues().get(j)+";");
+						}
+						System.out.println("");
+					}
+					System.out.println("Total Record = " +record.size());	
+				}else {
+					System.out.println("");
+				}
+			}else{
+				for (int i = 5; i < chaine.length; i+=2) {
+					String[] condition = chaine[i].split("<>");
+					if(condition.length==2) {
+						int indice = 0;
+						String type = null;
+						for (int k=0; k<relInfo.getListe().size();k++) {
+							if(relInfo.getListe().get(k).getNom_col().equals(condition[0])) {
+								indice = k;
+								type = relInfo.getListe().get(k).getType_col();
+							}
+						}
+						for (int y = 0; y < record.size(); y++) {
+							for (int j = 0; j < record.get(y).getValues().size(); j++) {
+								if(type.equals("int") || type.equals("float") ) {
+									if(record.get(y).getValues().get(indice)!=(Interger.parseInt(option1))) {
+										
+									}
+								}
+								System.out.print(record.get(y).getValues().get(j)+";");
+							}
+							System.out.println("");
+						}
+					}
+				}
+			}
+			
+		}catch(NoSuchElementException e) {
+			System.out.println(e.getMessage());
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }

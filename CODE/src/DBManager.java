@@ -77,9 +77,9 @@ public enum DBManager {
 		String[] chaine = reponse.split(" ");
 		try {
 			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[2]);
-			PageID freePage = FileManager.INSTANCE.getFreeDataPage(relInfo);
+			
 			String filename = chaine[5];
-			FileReader fr = new FileReader(filename);
+			FileReader fr = new FileReader("../"+filename);
 			BufferedReader br = new BufferedReader(fr);
 			String line;
 			Record record;
@@ -89,6 +89,7 @@ public enum DBManager {
 				for (int i = 0; i < lotValues.length; i++) {
 					record.getValues().add(lotValues[i]);
 				}
+				PageID freePage = FileManager.INSTANCE.getFreeDataPage(relInfo);
 				FileManager.INSTANCE.writeRecordToDataPage(relInfo, record, freePage);
 			}
 			br.close();

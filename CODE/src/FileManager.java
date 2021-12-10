@@ -75,7 +75,7 @@ public enum FileManager {
 		buff.putInt(nextPageId);
 		BufferManager.INSTANCE.freePage(pageId, true);
 
-		//nextPage correspond à la page qui était à l'origine la page suivante du headerPage
+		//nextPage correspond à la page qui était à l'origine la page libre suivante du headerPage
 		//On va changer cette page en mettant le PageID de la nouvelle page inséré comme page précédente sauf si c'est la page de fileID -1 (page factice)
 		if(nextFileId != -1) {
 			PageID nextPage = new PageID(nextFileId, nextPageId);
@@ -101,6 +101,7 @@ public enum FileManager {
 		else {
 			freePageId = new PageID(nextFileId, nextPageId);
 		}
+		BufferManager.INSTANCE.freePage(headerPage, false);
 		return freePageId;
 	}
 
@@ -108,7 +109,7 @@ public enum FileManager {
 		PageID headerPage = rec.getRelationInfo().getHeaderPageId();
 		ByteBuffer buff = BufferManager.INSTANCE.getPage(headerPage);
 		buff.position(8);
-		int nextFileId = buff.getInt();
+		int nextFileId = buff.getInt(); //nextFileId, fileid de la prochaine page remplie
 		int nextPageId = buff.getInt();
 		BufferManager.INSTANCE.freePage(headerPage, false);
 		PageID nextPage = new PageID(nextFileId, nextPageId);
@@ -142,48 +143,40 @@ public enum FileManager {
 			if(islast == true) { //si le slot était le dernier libre, on bouge la page dans la liste des pages remplies
 				buff.position(0);
 				//Récuperons les pages (pas remplies) qui étaient avant et après la nouvelle page désormais remplie
-				int oldPrevFileId = buff.getInt();
-				int oldPrevPageId = buff.getInt();
 				int oldNextFileId = buff.getInt();
 				int oldNextPageId = buff.getInt();
-				PageID oldPrevPage = new PageID(oldPrevFileId, oldPrevPageId);
 				PageID oldNextPage = new PageID(oldNextFileId, oldNextPageId);
-				//Remplaçons les anciens pointeurs par les nouveaux (la headerpage et la page après l'headerpage)
+				//Remplaçons les anciens pointeurs par les nouveaux (la page remplie après l'headerpage)
 				buff.position(0);
 				buff.putInt(headerPage.getFileId());
 				buff.putInt(headerPage.getPageId());
 				buff.putInt(nextFileId);
 				buff.putInt(nextPageId);
 				BufferManager.INSTANCE.freePage(pageId, true);
-				//Remplaçons dans le headerPage la page remplie suivante par notre nouvelle page
+				//Remplaçons dans le headerPage la page libre suivante par oldNextPage et la page remplie suivante par notre nouvelle page
 				buff = BufferManager.INSTANCE.getPage(headerPage);
-				buff.position(8);
+				buff.position(0);
+				buff.putInt(oldNextFileId);
+				buff.putInt(oldNextPageId);
 				buff.putInt(pageId.getFileId());
 				buff.putInt(pageId.getPageId());
 				BufferManager.INSTANCE.freePage(headerPage, true);
 				//Remplaçons les pointeurs de la page rempli qui était à l'origine après la headerpage par ceux de notre nouvelle page remplie
-				buff = BufferManager.INSTANCE.getPage(nextPage);
-				buff.position(0);
-				buff.putInt(pageId.getFileId());
-				buff.putInt(pageId.getPageId());
-				BufferManager.INSTANCE.freePage(nextPage, true);
-				//Remplaçons les pointeurs de la headerpage
-				buff = BufferManager.INSTANCE.getPage(headerPage);
-				buff.position(8);
-				buff.putInt(pageId.getFileId());
-				buff.putInt(pageId.getPageId());
-				BufferManager.INSTANCE.freePage(headerPage, true);
-				//Il faut raccorder l'ancienne page précédente libre a l'ancienne page suivante libre
-				buff = BufferManager.INSTANCE.getPage(oldPrevPage);
-				buff.position(8);
-				buff.putInt(oldNextFileId);
-				buff.putInt(oldNextPageId);
-				BufferManager.INSTANCE.freePage(oldPrevPage, true);
-				buff = BufferManager.INSTANCE.getPage(oldNextPage);
-				buff.position(0);
-				buff.putInt(oldPrevFileId);
-				buff.putInt(oldPrevPageId);
-				BufferManager.INSTANCE.freePage(oldNextPage, true);
+				if(nextPage.getFileId()!=-1) {
+					buff = BufferManager.INSTANCE.getPage(nextPage);
+					buff.position(0);
+					buff.putInt(pageId.getFileId());
+					buff.putInt(pageId.getPageId());
+					BufferManager.INSTANCE.freePage(nextPage, true);
+				}
+				//Il faut raccorder l'ancienne page suivante libre au headerpage
+				if(oldNextPage.getFileId()!=-1) {
+					buff = BufferManager.INSTANCE.getPage(oldNextPage);
+					buff.position(0);
+					buff.putInt(headerPage.getFileId());
+					buff.putInt(headerPage.getPageId());
+					BufferManager.INSTANCE.freePage(oldNextPage, true);
+				}
 			}
 			else {
 				BufferManager.INSTANCE.freePage(pageId, true);

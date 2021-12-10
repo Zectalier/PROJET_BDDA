@@ -9,13 +9,11 @@ public enum DBManager {
 	DBManager;
 
 	public void Finish() {
-		// TODO Auto-generated method stub
 		BufferManager.INSTANCE.flushAll();
 		Catalog.INSTANCE.Finish();
 	}
 
 	public void Init() {
-		// TODO Auto-generated method stub
 		Catalog.INSTANCE.Init();
 	}
 
@@ -23,16 +21,26 @@ public enum DBManager {
 		String[] chaine = reponse.split(" ()");
 		switch (chaine[0]) {
 			case "CREATE" :
-				CreateRelationCommand create = new CreateRelationCommand(
-						reponse);
+				CreateRelationCommand create = new CreateRelationCommand(reponse);
 				create.Execute();
 				break;
+			case "DROPDB":
+				DropDB();
+				break;
+			case "INSERT":
+				Insert(reponse);
+				break;
+			case "BATCHINSERT":
+				BatchInsert(reponse);
+				break;
+			default:
+				System.err.println("Erreur : commande inconnue");
 		}
 	}
 	
-	public boolean Exit(String reponse) {
+	public void Exit(String reponse) {
 		Finish();
-		return true;
+		return;
 	}
 	
 	public void DropDB() {
@@ -73,20 +81,20 @@ public enum DBManager {
 			String line;
 			Record record;
 			while((line = br.readLine())!=null){
-				String[] lotValues = reponse.split(",");
+				String[] lotValues = line.split(",");
 				record=new Record(relInfo);
 				for (int i = 0; i < lotValues.length; i++) {
 					record.getValues().add(lotValues[i]);
 				}
 				FileManager.INSTANCE.writeRecordToDataPage(relInfo, record, freePage);
 			}
+			br.close();
+			fr.close();
 		}catch (NoSuchElementException e) {
 			System.out.println(e.getMessage());
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

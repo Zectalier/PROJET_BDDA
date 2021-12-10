@@ -30,11 +30,10 @@ public enum Catalog {
 			object.close();
 
 		} catch (IOException e) {
-			System.out.println("Erreur, le fichier n'a pas pu être trouvée");
-			e.getMessage();
+			System.out.println(e.getMessage());
 		} catch (ClassNotFoundException e) {
-			System.out.println("Erreur, classe inexistante");
-			e.getMessage();
+			System.out.println(e.getMessage());
+			
 		}
 	}
 
@@ -52,9 +51,6 @@ public enum Catalog {
 	}
 
 	public void AddRelation(RelationInfo liste) {
-		for (int i = 0; i <tableau_rel_info.size(); i++) {
-			System.out.println(tableau_rel_info.get(i));
-		}
 		tableau_rel_info.add(liste);
 	}
 	

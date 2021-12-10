@@ -10,7 +10,7 @@ public class Menu {
 			String reponse = scan.nextLine();
 			switch(reponse){
 				case "EXIT":
-					DBManager.DBManager.Exit(reponse);
+					DBManager.DBManager.Exit();
 					end=true;
 					break;
 				default: 

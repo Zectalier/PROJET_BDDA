@@ -38,7 +38,7 @@ public enum DBManager {
 		}
 	}
 	
-	public void Exit(String reponse) {
+	public void Exit() {
 		Finish();
 		return;
 	}

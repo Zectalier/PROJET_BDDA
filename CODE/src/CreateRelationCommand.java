@@ -13,8 +13,8 @@ public class CreateRelationCommand {
 		String[] chainelist = chaine.split("\\s+|\\t+"); //Use \\s+|\\t+ to split on spaces even if they are more
 		nomRelation = chainelist[2];
 		String nomtype = chainelist[3];
-		nomtype.replace("(","");
-		nomtype.replace(")","");
+		nomtype=nomtype.replace("(","");
+		nomtype=nomtype.replace(")","");
 		String[] listecolonne = nomtype.split(",");
 		nbColonnes = listecolonne.length;
 		String[] splittedlistecolonne;

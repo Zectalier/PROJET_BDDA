@@ -26,14 +26,15 @@ public enum BufferManager {
 
 		for(int i = 0; i<listFrame.size();i++) {
 			//Vérifie si le PageId de la Frame est la même que page et si oui incrémente son PinCount et le met en dernière position de la liste
-			if(listFrame.get(i).getPageId() == page) {
-				temp = listFrame.get(i);
-				temp.setPinCount(temp.getPinCount() + 1);
-				listFrame.remove(i);
-				listFrame.add(temp);
-				return temp.getBuffer();
+			if(listFrame.get(i).getPageId()!=null) {
+				if(listFrame.get(i).getPageId().equals(page)) {
+					temp = listFrame.get(i);
+					temp.setPinCount(temp.getPinCount() + 1);
+					listFrame.remove(i);
+					listFrame.add(temp);
+					return temp.getBuffer();
+				}
 			}
-
 			//Sinon, vérifie si la frame à listFrame[i] est la dernière frame MRU qui à un PinCount à 0
 			else {
 				if(listFrame.get(i).getPinCount() == 0) {
@@ -50,7 +51,7 @@ public enum BufferManager {
 		//Sinon retirer la frame MRU et rajouter une nouvelle Frame(page) en fin de liste
 		else {
 			if(listFrame.get(indexmru).getPinCount()!=0) {
-				System.out.println("Pas de frame disponible");
+				System.out.println("ERREUR! Pas de frame disponible");
 				return temp.getBuffer();
 			}
 			else {
@@ -67,18 +68,20 @@ public enum BufferManager {
 
 	public void freePage(PageID page, boolean valdirty) {
 		for(int i = 0; i<listFrame.size();i++) {
-			if(listFrame.get(i).getPageId() == page) {
-				if(listFrame.get(i).getPinCount() == 0) {
-					System.out.println("Attention, pin count � 0");
-					return;
-				}
-				else {
-					Frame temp = listFrame.get(i);
-					temp.setPinCount(temp.getPinCount() - 1);
-					temp.setDirty(valdirty);
-					listFrame.remove(temp);
-					listFrame.add(temp);
-					return;
+			if(listFrame.get(i).getPageId()!=null) {
+				if(listFrame.get(i).getPageId().equals(page)) {
+					if(listFrame.get(i).getPinCount() == 0) {
+						System.out.println("Attention, pin count � 0");
+						return;
+					}
+					else {
+						Frame temp = listFrame.get(i);
+						temp.setPinCount(temp.getPinCount() - 1);
+						temp.setDirty(valdirty);
+						listFrame.remove(temp);
+						listFrame.add(temp);
+						return;
+					}
 				}
 			}
 		}

@@ -1,7 +1,9 @@
 import java.util.Scanner;
 
 public class Menu {
-
+	//CREATE RELATION dab (A:int,B:string4,C:int)
+	//BATCHINSERT INTO dab FROM FILE R1.csv
+	
 	public static void menuCommande() {
 		boolean end = false;
 		Scanner scan;

@@ -95,13 +95,13 @@ public enum FileManager {
 		buff.rewind();
 		int nextFileId = buff.getInt();
 		int nextPageId = buff.getInt();
+		BufferManager.INSTANCE.freePage(headerPage, false);
 		if(nextFileId == -1) {
 			freePageId = addDataPage(relInfo);
 		}
 		else {
 			freePageId = new PageID(nextFileId, nextPageId);
 		}
-		BufferManager.INSTANCE.freePage(headerPage, false);
 		return freePageId;
 	}
 
@@ -141,8 +141,8 @@ public enum FileManager {
 		if(position!=-1) {
 			rec.writeToBuffer(buff, position);
 			if(islast == true) { //si le slot était le dernier libre, on bouge la page dans la liste des pages remplies
-				buff.position(0);
-				//Récuperons les pages (pas remplies) qui étaient avant et après la nouvelle page désormais remplie
+				buff.position(8);
+				//Récuperons la page (pas remplie) qui était après la nouvelle page désormais remplie
 				int oldNextFileId = buff.getInt();
 				int oldNextPageId = buff.getInt();
 				PageID oldNextPage = new PageID(oldNextFileId, oldNextPageId);

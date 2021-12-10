@@ -7,7 +7,7 @@ public class Main {
 		DBParams.maxPagesPerFile = 4;
 		DBParams.frameCount = 2;
 
-		DBManager.DBManager.Init();
+		DBManager.DBMANAGER.Init();
 		Menu.menuCommande();
 		
 	}

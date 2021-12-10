@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 
 public enum DBManager {
-	DBManager;
+	DBMANAGER;
 
 	public void Finish() {
 		BufferManager.INSTANCE.flushAll();

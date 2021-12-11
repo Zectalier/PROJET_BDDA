@@ -62,4 +62,13 @@ public class Record {
 		values = al;
 		return;
 	}
+	
+	public void setValueFor(String nomCol, String value) {
+		for(int i = 0; i < relInfo.getListe().size();i++) {
+			if(nomCol.equals(relInfo.getListe().get(i).getNom_col())) {
+				values.set(i, value);
+			}
+		}
+		return;
+	}
 }

@@ -107,6 +107,7 @@ public enum DBManager {
 		}
 	}
 	
+	//on cherche l'indice de la colonne correspondant à la condition dans RelationInfo en vérifiant nomCom=condition[0]
 	private int chercheIndiceColonne(RelationInfo relInfo, String string) {
 		for (int i = 0; i < relInfo.getListe().size(); i++) {
 			if(relInfo.getListe().get(i).getNom_col().equals(string)) {
@@ -116,126 +117,136 @@ public enum DBManager {
 		return -1;
 	}
 	
+	//on vérifie une condition du SELECTMONO
 	private boolean VerifCondition(String chaine,Record record, RelationInfo relInfo) {
+		//on split avec le séparateur <>, s'il n'y a pas de <> dans l'expression, alors il n'y aura qu'un seul élément dans condition, sinon, il y en aura 2 et donc, la condition à vérifier est le <>
 		String[]condition=chaine.split("<>");
 		int indice;
-		if(condition.length==2) {
+		if(condition.length==2) { //si 2 éléments, alors on a trouvé le bon opérateur
 			indice=chercheIndiceColonne(relInfo,condition[1]);
-			if(!record.getValues().get(indice).equals(condition[1]))
-				return true;
-			else
-				return false;
+			if(indice!=-1) {
+				if(!record.getValues().get(indice).equals(condition[1])) //on vérifie si la chaine values.get(i)!=condition[1]
+					return true;
+			}
+			//si indice = -1, alors on return false
+			return false;
 		}
+		//on tente de split avec le séparateur <=
 		condition=chaine.split("<=");
 		if(condition.length==2) {
 			indice=chercheIndiceColonne(relInfo,condition[1]);
-			String type = relInfo.getListe().get(indice).getType_col();
-			switch(type) {
-				case "int":
-					if(Integer.parseInt(record.getValues().get(indice))<=(Integer.parseInt(chaine))) 
-						return true;
-					else
-						return false;
-				case "float":
-					if(Float.parseFloat(record.getValues().get(indice))<=(Float.parseFloat(chaine)))
-						return true;
-					else
-						return false;
-				default:
-					if(record.getValues().get(indice).compareTo(chaine)<=0)
-						return true;
-					else
-						return false;
+			if(indice!=-1) { //si indice =-1, alors on n'a pas trouvé la colonne correspondante a ce qui a été donné par l'utilisateur
+				String type = relInfo.getListe().get(indice).getType_col();
+			//switch pour vérifier la vérifier la condition en fonction du type de la valeur
+				switch(type) {
+					case "int":
+						if(Integer.parseInt(record.getValues().get(indice))<=(Integer.parseInt(chaine))) 
+							return true;
+						else
+							return false;
+					case "float":
+						if(Float.parseFloat(record.getValues().get(indice))<=(Float.parseFloat(chaine)))
+							return true;
+						else
+							return false;
+					default:
+						if(record.getValues().get(indice).compareTo(chaine)<=0)
+							return true;
+						else
+							return false;
+				}
 			}
+			return false;
 		}
+		//on split avec le séparateur >=
 		condition=chaine.split(">=");
 		if(condition.length==2) {
 			indice=chercheIndiceColonne(relInfo,condition[1]);
-			String type = relInfo.getListe().get(indice).getType_col();
-			switch(type) {
-				case "int":
-					if(Integer.parseInt(record.getValues().get(indice))>=(Integer.parseInt(chaine))) 
-						return true;
-					else
-						return false;
-				case "float":
-					if(Float.parseFloat(record.getValues().get(indice))>=(Float.parseFloat(chaine)))
-						return true;
-					else
-						return false;
-				default:
-					if(record.getValues().get(indice).compareTo(chaine)>=0)
-						return true;
-					else
-						return false;
+			if(indice!=-1) {
+				String type = relInfo.getListe().get(indice).getType_col();
+				switch(type) {
+					case "int":
+						if(Integer.parseInt(record.getValues().get(indice))>=(Integer.parseInt(chaine))) 
+							return true;
+						else
+							return false;
+					case "float":
+						if(Float.parseFloat(record.getValues().get(indice))>=(Float.parseFloat(chaine)))
+							return true;
+						else
+							return false;
+					default:
+						if(record.getValues().get(indice).compareTo(chaine)>=0)
+							return true;
+						else
+							return false;
+				}
 			}
+			return false;
 		}
+		//on split avec le séparateur >
 		condition=chaine.split(">");
 		if(condition.length==2) {
 			indice=chercheIndiceColonne(relInfo,condition[1]);
-			String type = relInfo.getListe().get(indice).getType_col();
-			switch(type) {
-				case "int":
-					if(Integer.parseInt(record.getValues().get(indice))>(Integer.parseInt(chaine))) 
-						return true;
-					else
-						return false;
-				case "float":
-					if(Float.parseFloat(record.getValues().get(indice))>(Float.parseFloat(chaine)))
-						return true;
-					else
-						return false;
-				default:
-					if(record.getValues().get(indice).compareTo(chaine)>0)
-						return true;
-					else
-						return false;
+			if(indice!=-1) {
+				String type = relInfo.getListe().get(indice).getType_col();
+				switch(type) {
+					case "int":
+						if(Integer.parseInt(record.getValues().get(indice))>(Integer.parseInt(chaine))) 
+							return true;
+						else
+							return false;
+					case "float":
+						if(Float.parseFloat(record.getValues().get(indice))>(Float.parseFloat(chaine)))
+							return true;
+						else
+							return false;
+					default:
+						if(record.getValues().get(indice).compareTo(chaine)>0)
+							return true;
+						else
+							return false;
+				}
 			}
+			return false;
 		}
+		//on split avec le séparateur <
 		condition=chaine.split("<");
 		if(condition.length==2) {
 			indice=chercheIndiceColonne(relInfo,condition[1]);
-			String type = relInfo.getListe().get(indice).getType_col();
-			switch(type) {
-				case "int":
-					if(Integer.parseInt(record.getValues().get(indice))<(Integer.parseInt(chaine))) 
-						return true;
-					else
-						return false;
-				case "float":
-					if(Float.parseFloat(record.getValues().get(indice))<(Float.parseFloat(chaine)))
-						return true;
-					else
-						return false;
-				default:
-					if(record.getValues().get(indice).compareTo(chaine)<0)
-						return true;
-					else
-						return false;
+			if(indice!=-1) {
+				String type = relInfo.getListe().get(indice).getType_col();
+				switch(type) {
+					case "int":
+						if(Integer.parseInt(record.getValues().get(indice))<(Integer.parseInt(chaine))) 
+							return true;
+						else
+							return false;
+					case "float":
+						if(Float.parseFloat(record.getValues().get(indice))<(Float.parseFloat(chaine)))
+							return true;
+						else
+							return false;
+					default:
+						if(record.getValues().get(indice).compareTo(chaine)<0)
+							return true;
+						else
+							return false;
+				}
 			}
+			return false;
 		}
-		condition=chaine.split("<");
+		//il ne reste plus que le = comme opérateur possible
+		condition=chaine.split("=");
 		indice=chercheIndiceColonne(relInfo,condition[1]);
-		String type = relInfo.getListe().get(indice).getType_col();
-		switch(type) {
-			case "int":
-				if(Integer.parseInt(record.getValues().get(indice))<(Integer.parseInt(chaine))) 
-					return true;
-				else
-					return false;
-			case "float":
-				if(Float.parseFloat(record.getValues().get(indice))<(Float.parseFloat(chaine)))
-					return true;
-				else
-					return false;
-			default:
-				if(record.getValues().get(indice).compareTo(chaine)<0)
-					return true;
-				else
-					return false;
+		if(indice!=-1) {
+			if(record.getValues().get(indice).equals(condition[1])) //on vérifie si la chaine values.get(i)==condition[1]
+				return true;
 		}
+		return false;
 	}
 	
+	//on vérif toutes les conditions en faisant une boucle sur le nombre de conditions en utilisant la méthode précédente pour chaque condition
 	private boolean VerifToutesConditions(ArrayList<String>conditions,Record record, RelationInfo relInfo) {
 		for (int i = 0; i < conditions.size(); i++) {
 			if(!VerifCondition(conditions.get(i),record,relInfo))
@@ -250,8 +261,8 @@ public enum DBManager {
 		try {
 			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[3]);
 			ArrayList<Record> record = FileManager.INSTANCE.getAllRecords(relInfo);
-			if(chaine.length==3) {
-				if(chaine[1].equals("*")){
+			if(chaine.length==3) {	//cas où il n'y a pas de WHERE, donc pas de conditions
+				if(chaine[1].equals("*")){ //on affiche tous les records de la relation
 					for (int i = 0; i < record.size(); i++) {
 						for (int j = 0; j < record.get(i).getValues().size(); j++) {
 							System.out.print(record.get(i).getValues().get(j)+";");
@@ -262,14 +273,14 @@ public enum DBManager {
 				}else {
 					System.out.println("");
 				}
-			}else{
+			}else{ //il y a des conditions WHERE dans le SELECTMONO
 				ArrayList<String> conditions = new ArrayList<String>();
 				int compteur=0;
 				for (int i = 5; i < chaine.length; i+=2) {
-					conditions.add(chaine[i]);
+					conditions.add(chaine[i]);	//on ajoute toutes les condtions dans une ArrayList
 				}
 				for (int i = 0; i < record.size(); i++) {
-					if(VerifToutesConditions(conditions, record.get(i), relInfo)) {
+					if(VerifToutesConditions(conditions, record.get(i), relInfo)) { //on regarde si le record vérifie toutes les conditions
 						for (int j = 0; j < record.get(i).getValues().size(); j++) {
 							System.out.print(record.get(i).getValues().get(j)+";");
 							compteur++;

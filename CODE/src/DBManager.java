@@ -24,19 +24,19 @@ public enum DBManager {
 			case "CREATE" :
 				CreateRelationCommand create = new CreateRelationCommand(reponse);
 				create.Execute();
-				System.out.println("Relation Créée");
+				System.out.println("Relation CrÃ©Ã©e");
 				break;
 			case "DROPDB":
 				DropDB();
-				System.out.println("La Base de données à été supprimé");
+				System.out.println("La Base de donnÃ©es Ã  Ã©tÃ© remise Ã  zÃ©ro");
 				break;
 			case "INSERT":
 				Insert(reponse);
-				System.out.println("Le Record a été inséré");
+				System.out.println("Le Record a Ã©tÃ© insÃ©rÃ©");
 				break;
 			case "BATCHINSERT":
 				BatchInsert(reponse);
-				System.out.println("Tout les tuples ont été inséré");
+				System.out.println("Tout les tuples ont Ã©tÃ© insÃ©rÃ©");
 				break;
 			case "SELECTMONO":
 				SelectMono(reponse);
@@ -114,7 +114,7 @@ public enum DBManager {
 		}
 	}
 	
-	//on cherche l'indice de la colonne correspondant à la condition dans RelationInfo en vérifiant nomCom=condition[0]
+	//on cherche l'indice de la colonne correspondant Ã  la condition dans RelationInfo en vÃ©rifiant nomCom=condition[0]
 	private int chercheIndiceColonne(RelationInfo relInfo, String string) {
 		for (int i = 0; i < relInfo.getListe().size(); i++) {
 			if(relInfo.getListe().get(i).getNom_col().equals(string)) {
@@ -124,27 +124,27 @@ public enum DBManager {
 		return -1;
 	}
 	
-	//on vérifie une condition du SELECTMONO
+	//on vÃ©rifie une condition du SELECTMONO
 	private boolean VerifCondition(String chaine,Record record, RelationInfo relInfo) {
-		//on split avec le séparateur <>, s'il n'y a pas de <> dans l'expression, alors il n'y aura qu'un seul élément dans condition, sinon, il y en aura 2 et donc, la condition à vérifier est le <>
+		//on split avec le sÃ©parateur <>, s'il n'y a pas de <> dans l'expression, alors il n'y aura qu'un seul Ã©lÃ©ment dans condition, sinon, il y en aura 2 et donc, la condition Ã  vÃ©rifier est le <>
 		String[]condition=chaine.split("<>");
 		int indice;
-		if(condition.length==2) { //si 2 éléments, alors on a trouvé le bon opérateur
+		if(condition.length==2) { //si 2 Ã©lÃ©ments, alors on a trouvÃ© le bon opÃ©rateur
 			indice=chercheIndiceColonne(relInfo,condition[0]);
 			if(indice!=-1) {
-				if(!record.getValues().get(indice).equals(condition[1])) //on vérifie si la chaine values.get(i)!=condition[1]
+				if(!record.getValues().get(indice).equals(condition[1])) //on vÃ©rifie si la chaine values.get(i)!=condition[1]
 					return true;
 			}
 			//si indice = -1, alors on return false
 			return false;
 		}
-		//on tente de split avec le séparateur <=
+		//on tente de split avec le sÃ©parateur <=
 		condition=chaine.split("<=");
 		if(condition.length==2) {
 			indice=chercheIndiceColonne(relInfo,condition[0]);
-			if(indice!=-1) { //si indice =-1, alors on n'a pas trouvé la colonne correspondante a ce qui a été donné par l'utilisateur
+			if(indice!=-1) { //si indice =-1, alors on n'a pas trouvÃ© la colonne correspondante a ce qui a Ã©tÃ© donnÃ© par l'utilisateur
 				String type = relInfo.getListe().get(indice).getType_col();
-			//switch pour vérifier la vérifier la condition en fonction du type de la valeur
+			//switch pour vÃ©rifier la vÃ©rifier la condition en fonction du type de la valeur
 				switch(type) {
 					case "int":
 						if(Integer.parseInt(record.getValues().get(indice))<=(Integer.parseInt(condition[1]))) 
@@ -165,7 +165,7 @@ public enum DBManager {
 			}
 			return false;
 		}
-		//on split avec le séparateur >=
+		//on split avec le sÃ©parateur >=
 		condition=chaine.split(">=");
 		if(condition.length==2) {
 			indice=chercheIndiceColonne(relInfo,condition[0]);
@@ -191,7 +191,7 @@ public enum DBManager {
 			}
 			return false;
 		}
-		//on split avec le séparateur >
+		//on split avec le sÃ©parateur >
 		condition=chaine.split(">");
 		if(condition.length==2) {
 			indice=chercheIndiceColonne(relInfo,condition[0]);
@@ -217,7 +217,7 @@ public enum DBManager {
 			}
 			return false;
 		}
-		//on split avec le séparateur <
+		//on split avec le sÃ©parateur <
 		condition=chaine.split("<");
 		if(condition.length==2) {
 			indice=chercheIndiceColonne(relInfo,condition[0]);
@@ -243,17 +243,17 @@ public enum DBManager {
 			}
 			return false;
 		}
-		//il ne reste plus que le = comme opérateur possible
+		//il ne reste plus que le = comme opÃ©rateur possible
 		condition=chaine.split("=");
 		indice=chercheIndiceColonne(relInfo,condition[0]);
 		if(indice!=-1) {
-			if(record.getValues().get(indice).equals(condition[1])) //on vérifie si la chaine values.get(i)==condition[1]
+			if(record.getValues().get(indice).equals(condition[1])) //on vÃ©rifie si la chaine values.get(i)==condition[1]
 				return true;
 		}
 		return false;
 	}
 	
-	//on vérif toutes les conditions en faisant une boucle sur le nombre de conditions en utilisant la méthode précédente pour chaque condition
+	//on vÃ©rif toutes les conditions en faisant une boucle sur le nombre de conditions en utilisant la mÃ©thode prÃ©cÃ©dente pour chaque condition
 	public boolean VerifToutesConditions(ArrayList<String>conditions,Record record, RelationInfo relInfo) {
 		for (int i = 0; i < conditions.size(); i++) {
 			if(!VerifCondition(conditions.get(i),record,relInfo))
@@ -268,7 +268,7 @@ public enum DBManager {
 		try {
 			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[3]);
 			ArrayList<Record> record = FileManager.INSTANCE.getAllRecords(relInfo);
-			if(chaine.length==4) {	//cas où il n'y a pas de WHERE, donc pas de conditions
+			if(chaine.length==4) {	//cas oÃ¹ il n'y a pas de WHERE, donc pas de conditions
 				if(chaine[1].equals("*")){ //on affiche tous les records de la relation
 					int recordnonvide = 0;
 					for (int i = 0; i < record.size(); i++) {
@@ -292,7 +292,7 @@ public enum DBManager {
 				}
 				for (int i = 0; i < record.size(); i++) {
 					if(!record.get(i).getValues().isEmpty()) {
-						if(VerifToutesConditions(conditions, record.get(i), relInfo)) { //on regarde si le record vérifie toutes les conditions
+						if(VerifToutesConditions(conditions, record.get(i), relInfo)) { //on regarde si le record vÃ©rifie toutes les conditions
 							for (int j = 0; j < record.get(i).getValues().size(); j++) {
 								System.out.print(record.get(i).getValues().get(j)+";");
 							}
@@ -323,6 +323,6 @@ public enum DBManager {
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
-		System.out.println(compteur+" tuple(s) a(ont) été(s) supprimé");
+		System.out.println(compteur+" tuple(s) a(ont) Ã©tÃ©(s) supprimÃ©");
 	}
 }

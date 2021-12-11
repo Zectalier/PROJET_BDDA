@@ -2,12 +2,18 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public class Record {
+	
 	private RelationInfo relInfo;
 	private ArrayList<String> values;
 
 	public Record(RelationInfo relInfo) {
 		this.relInfo = relInfo;
 		values = new ArrayList<String>();
+	}
+	
+	public Record(RelationInfo relInfo, ArrayList<String> al) {
+		this.relInfo = relInfo;
+		values = al;
 	}
 
 	void writeToBuffer(ByteBuffer buff, int position) {
@@ -52,4 +58,8 @@ public class Record {
 		return values;
 	}
 	
+	public void setValues(ArrayList<String> al) {
+		values = al;
+		return;
+	}
 }

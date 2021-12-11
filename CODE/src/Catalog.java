@@ -20,6 +20,7 @@ public enum Catalog {
 	public void Init() {
 		try {
 			File file = new File(DBParams.DBPath + "Catalog.def");
+			file.createNewFile();
 			FileInputStream tab = new FileInputStream(file);
 			if(file.length()==0) {
 				tab.close();

@@ -24,18 +24,25 @@ public enum DBManager {
 			case "CREATE" :
 				CreateRelationCommand create = new CreateRelationCommand(reponse);
 				create.Execute();
+				System.out.println("Relation Créée");
 				break;
 			case "DROPDB":
 				DropDB();
+				System.out.println("La Base de données à été supprimé");
 				break;
 			case "INSERT":
 				Insert(reponse);
+				System.out.println("Le Record a été inséré");
 				break;
 			case "BATCHINSERT":
 				BatchInsert(reponse);
+				System.out.println("Tout les tuples ont été inséré");
 				break;
 			case "SELECTMONO":
 				SelectMono(reponse);
+				break;
+			case "DELETE":
+				delete(reponse);
 				break;
 			default:
 				System.err.println("Erreur : commande inconnue");
@@ -123,7 +130,7 @@ public enum DBManager {
 		String[]condition=chaine.split("<>");
 		int indice;
 		if(condition.length==2) { //si 2 éléments, alors on a trouvé le bon opérateur
-			indice=chercheIndiceColonne(relInfo,condition[1]);
+			indice=chercheIndiceColonne(relInfo,condition[0]);
 			if(indice!=-1) {
 				if(!record.getValues().get(indice).equals(condition[1])) //on vérifie si la chaine values.get(i)!=condition[1]
 					return true;
@@ -134,23 +141,23 @@ public enum DBManager {
 		//on tente de split avec le séparateur <=
 		condition=chaine.split("<=");
 		if(condition.length==2) {
-			indice=chercheIndiceColonne(relInfo,condition[1]);
+			indice=chercheIndiceColonne(relInfo,condition[0]);
 			if(indice!=-1) { //si indice =-1, alors on n'a pas trouvé la colonne correspondante a ce qui a été donné par l'utilisateur
 				String type = relInfo.getListe().get(indice).getType_col();
 			//switch pour vérifier la vérifier la condition en fonction du type de la valeur
 				switch(type) {
 					case "int":
-						if(Integer.parseInt(record.getValues().get(indice))<=(Integer.parseInt(chaine))) 
+						if(Integer.parseInt(record.getValues().get(indice))<=(Integer.parseInt(condition[1]))) 
 							return true;
 						else
 							return false;
 					case "float":
-						if(Float.parseFloat(record.getValues().get(indice))<=(Float.parseFloat(chaine)))
+						if(Float.parseFloat(record.getValues().get(indice))<=(Float.parseFloat(condition[1])))
 							return true;
 						else
 							return false;
 					default:
-						if(record.getValues().get(indice).compareTo(chaine)<=0)
+						if(record.getValues().get(indice).compareTo(condition[1])<=0)
 							return true;
 						else
 							return false;
@@ -161,22 +168,22 @@ public enum DBManager {
 		//on split avec le séparateur >=
 		condition=chaine.split(">=");
 		if(condition.length==2) {
-			indice=chercheIndiceColonne(relInfo,condition[1]);
+			indice=chercheIndiceColonne(relInfo,condition[0]);
 			if(indice!=-1) {
 				String type = relInfo.getListe().get(indice).getType_col();
 				switch(type) {
 					case "int":
-						if(Integer.parseInt(record.getValues().get(indice))>=(Integer.parseInt(chaine))) 
+						if(Integer.parseInt(record.getValues().get(indice))>=(Integer.parseInt(condition[1]))) 
 							return true;
 						else
 							return false;
 					case "float":
-						if(Float.parseFloat(record.getValues().get(indice))>=(Float.parseFloat(chaine)))
+						if(Float.parseFloat(record.getValues().get(indice))>=(Float.parseFloat(condition[1])))
 							return true;
 						else
 							return false;
 					default:
-						if(record.getValues().get(indice).compareTo(chaine)>=0)
+						if(record.getValues().get(indice).compareTo(condition[1])>=0)
 							return true;
 						else
 							return false;
@@ -187,22 +194,22 @@ public enum DBManager {
 		//on split avec le séparateur >
 		condition=chaine.split(">");
 		if(condition.length==2) {
-			indice=chercheIndiceColonne(relInfo,condition[1]);
+			indice=chercheIndiceColonne(relInfo,condition[0]);
 			if(indice!=-1) {
 				String type = relInfo.getListe().get(indice).getType_col();
 				switch(type) {
 					case "int":
-						if(Integer.parseInt(record.getValues().get(indice))>(Integer.parseInt(chaine))) 
+						if(Integer.parseInt(record.getValues().get(indice))>(Integer.parseInt(condition[1]))) 
 							return true;
 						else
 							return false;
 					case "float":
-						if(Float.parseFloat(record.getValues().get(indice))>(Float.parseFloat(chaine)))
+						if(Float.parseFloat(record.getValues().get(indice))>(Float.parseFloat(condition[1])))
 							return true;
 						else
 							return false;
 					default:
-						if(record.getValues().get(indice).compareTo(chaine)>0)
+						if(record.getValues().get(indice).compareTo(condition[1])>0)
 							return true;
 						else
 							return false;
@@ -213,22 +220,22 @@ public enum DBManager {
 		//on split avec le séparateur <
 		condition=chaine.split("<");
 		if(condition.length==2) {
-			indice=chercheIndiceColonne(relInfo,condition[1]);
+			indice=chercheIndiceColonne(relInfo,condition[0]);
 			if(indice!=-1) {
 				String type = relInfo.getListe().get(indice).getType_col();
 				switch(type) {
 					case "int":
-						if(Integer.parseInt(record.getValues().get(indice))<(Integer.parseInt(chaine))) 
+						if(Integer.parseInt(record.getValues().get(indice))<(Integer.parseInt(condition[1]))) 
 							return true;
 						else
 							return false;
 					case "float":
-						if(Float.parseFloat(record.getValues().get(indice))<(Float.parseFloat(chaine)))
+						if(Float.parseFloat(record.getValues().get(indice))<(Float.parseFloat(condition[1])))
 							return true;
 						else
 							return false;
 					default:
-						if(record.getValues().get(indice).compareTo(chaine)<0)
+						if(record.getValues().get(indice).compareTo(condition[1])<0)
 							return true;
 						else
 							return false;
@@ -238,7 +245,7 @@ public enum DBManager {
 		}
 		//il ne reste plus que le = comme opérateur possible
 		condition=chaine.split("=");
-		indice=chercheIndiceColonne(relInfo,condition[1]);
+		indice=chercheIndiceColonne(relInfo,condition[0]);
 		if(indice!=-1) {
 			if(record.getValues().get(indice).equals(condition[1])) //on vérifie si la chaine values.get(i)==condition[1]
 				return true;
@@ -247,7 +254,7 @@ public enum DBManager {
 	}
 	
 	//on vérif toutes les conditions en faisant une boucle sur le nombre de conditions en utilisant la méthode précédente pour chaque condition
-	private boolean VerifToutesConditions(ArrayList<String>conditions,Record record, RelationInfo relInfo) {
+	public boolean VerifToutesConditions(ArrayList<String>conditions,Record record, RelationInfo relInfo) {
 		for (int i = 0; i < conditions.size(); i++) {
 			if(!VerifCondition(conditions.get(i),record,relInfo))
 				return false;
@@ -261,15 +268,19 @@ public enum DBManager {
 		try {
 			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[3]);
 			ArrayList<Record> record = FileManager.INSTANCE.getAllRecords(relInfo);
-			if(chaine.length==3) {	//cas où il n'y a pas de WHERE, donc pas de conditions
+			if(chaine.length==4) {	//cas où il n'y a pas de WHERE, donc pas de conditions
 				if(chaine[1].equals("*")){ //on affiche tous les records de la relation
+					int recordnonvide = 0;
 					for (int i = 0; i < record.size(); i++) {
-						for (int j = 0; j < record.get(i).getValues().size(); j++) {
-							System.out.print(record.get(i).getValues().get(j)+";");
+						if(!record.get(i).getValues().isEmpty()) {
+							for (int j = 0; j < record.get(i).getValues().size(); j++) {
+								System.out.print(record.get(i).getValues().get(j)+";");
+							}
+							recordnonvide++;
+							System.out.println("");
 						}
-						System.out.println("");
 					}
-					System.out.println("Total Record = " +record.size());	
+					System.out.println("Total Record = " + recordnonvide);	
 				}else {
 					System.out.println("");
 				}
@@ -280,16 +291,17 @@ public enum DBManager {
 					conditions.add(chaine[i]);	//on ajoute toutes les condtions dans une ArrayList
 				}
 				for (int i = 0; i < record.size(); i++) {
-					if(VerifToutesConditions(conditions, record.get(i), relInfo)) { //on regarde si le record vérifie toutes les conditions
-						for (int j = 0; j < record.get(i).getValues().size(); j++) {
-							System.out.print(record.get(i).getValues().get(j)+";");
+					if(!record.get(i).getValues().isEmpty()) {
+						if(VerifToutesConditions(conditions, record.get(i), relInfo)) { //on regarde si le record vérifie toutes les conditions
+							for (int j = 0; j < record.get(i).getValues().size(); j++) {
+								System.out.print(record.get(i).getValues().get(j)+";");
+							}
 							compteur++;
+							System.out.println("");
 						}
-						System.out.println("");
 					}
-					
 				}
-				System.out.println("Total Record = " +compteur);
+				System.out.println("Total Record = " + compteur);
 			}
 			
 		}catch(NoSuchElementException e) {
@@ -298,16 +310,19 @@ public enum DBManager {
 		
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public void delete(String reponse) {
+		String[] chaine = reponse.split(" ");
+		int compteur = 0;
+		try {
+			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[2]);
+			ArrayList<String> conditions = new ArrayList<String>();
+			for (int i = 4; i < chaine.length; i+=2) {
+				conditions.add(chaine[i]);	//on ajoute toutes les condtions dans une ArrayList
+			}
+			compteur = FileManager.INSTANCE.deleteAllRecords(relInfo, conditions);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+		System.out.println(compteur+" tuple(s) a(ont) été(s) supprimé");
+	}
 }

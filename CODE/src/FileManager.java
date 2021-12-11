@@ -218,15 +218,19 @@ public enum FileManager {
 		int nextPageId = buff.getInt();
 		BufferManager.INSTANCE.freePage(headerPage, false);
 		PageID nextPageID = new PageID(nextFileId, nextPageId);
-		listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+		if(nextFileId!=-1) {
+			listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+		}
 		while(nextFileId!=-1) {
 			buff = BufferManager.INSTANCE.getPage(nextPageID);
 			buff.position(8);
 			nextFileId = buff.getInt();
 			nextPageId = buff.getInt();
-			BufferManager.INSTANCE.freePage(headerPage, false);
+			BufferManager.INSTANCE.freePage(nextPageID, false);
 			nextPageID = new PageID(nextFileId, nextPageId);
-			listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+			if(nextFileId!=-1) {
+				listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+			}
 		}
 		buff = BufferManager.INSTANCE.getPage(headerPage);
 		buff.position(8);
@@ -234,16 +238,102 @@ public enum FileManager {
 		nextPageId = buff.getInt();
 		BufferManager.INSTANCE.freePage(headerPage, false);
 		nextPageID = new PageID(nextFileId, nextPageId);
-		listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+		if(nextFileId!=-1) {
+			listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+		}
 		while(nextFileId!=-1) {
 			buff = BufferManager.INSTANCE.getPage(nextPageID);
 			buff.position(8);
 			nextFileId = buff.getInt();
 			nextPageId = buff.getInt();
-			BufferManager.INSTANCE.freePage(headerPage, false);
+			BufferManager.INSTANCE.freePage(nextPageID, false);
 			nextPageID = new PageID(nextFileId, nextPageId);
-			listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+			if(nextFileId!=-1) {
+				listRec.addAll(getRecordsInDataPage(relinfo,nextPageID));
+			}
 		}
 		return listRec;
+	}
+	
+	public int deleteRecordInDataPage(RelationInfo relInfo, ArrayList<String> condition, PageID pageId) {
+		int compteur = 0;
+		Record rec;
+		ArrayList<String> emptyValuesArrayList = new ArrayList<String>();
+		String str;
+		for(int i = 0;i < relInfo.getNb_col(); i++) {
+			if(relInfo.getListe().get(i).getType_col().equals("int") || relInfo.getListe().get(i).getType_col().equals("float")) {
+				emptyValuesArrayList.add("0");
+			}
+			else {
+				str = "";
+				for(int j = 0; j < Integer.parseInt(relInfo.getListe().get(i).getType_col().substring(6)); j++) {
+					str += "0";
+				}
+				emptyValuesArrayList.add(str);
+			}
+		}
+		ByteBuffer buff = BufferManager.INSTANCE.getPage(pageId);
+		for(int position = 16; position<16+relInfo.getSlotCount();position++) {
+			rec = new Record(relInfo);
+			if(buff.get(position)==(byte)1) {
+				rec.readFromBuffer(buff, (position-16)*relInfo.getRecordSize()+relInfo.getSlotCount()+16);
+				if(DBManager.DBMANAGER.VerifToutesConditions(condition, rec, relInfo)) {
+					compteur++;
+					buff.position(position);
+					buff.put((byte)0);
+					rec.setValues(emptyValuesArrayList);
+					rec.writeToBuffer(buff, (position-16)*relInfo.getRecordSize()+relInfo.getSlotCount()+16);
+				}
+			}
+		}
+		BufferManager.INSTANCE.freePage(pageId, true);
+		return compteur;
+	}
+	
+	public int deleteAllRecords(RelationInfo relInfo, ArrayList<String> condition) {
+		int compteur = 0;
+		PageID headerPage = relInfo.getHeaderPageId();
+		ByteBuffer buff = BufferManager.INSTANCE.getPage(headerPage);
+		buff.position(0);
+		int nextFileId = buff.getInt();
+		int nextPageId = buff.getInt();
+		BufferManager.INSTANCE.freePage(headerPage, false);
+		PageID nextPageID = new PageID(nextFileId, nextPageId);
+		if(nextFileId!=-1) {
+			compteur += deleteRecordInDataPage(relInfo, condition, nextPageID);
+		}
+		while(nextFileId!=-1) {
+			buff = BufferManager.INSTANCE.getPage(nextPageID);
+			buff.position(8);
+			nextFileId = buff.getInt();
+			nextPageId = buff.getInt();
+			BufferManager.INSTANCE.freePage(nextPageID, false);
+			nextPageID = new PageID(nextFileId, nextPageId);
+			if(nextFileId!=-1) {
+				compteur += deleteRecordInDataPage(relInfo, condition, nextPageID);
+			}
+		}
+		buff = BufferManager.INSTANCE.getPage(headerPage);
+		buff.position(8);
+		nextFileId = buff.getInt();
+		nextPageId = buff.getInt();
+		BufferManager.INSTANCE.freePage(headerPage, false);
+		nextPageID = new PageID(nextFileId, nextPageId);
+		if(nextFileId!=-1) {
+			compteur += deleteRecordInDataPage(relInfo, condition, nextPageID);
+		}
+		while(nextFileId!=-1) {
+			buff = BufferManager.INSTANCE.getPage(nextPageID);
+			buff.position(8);
+			nextFileId = buff.getInt();
+			nextPageId = buff.getInt();
+			BufferManager.INSTANCE.freePage(nextPageID, false);
+			nextPageID = new PageID(nextFileId, nextPageId);
+			if(nextFileId!=-1) {
+				compteur += deleteRecordInDataPage(relInfo, condition, nextPageID);
+			}
+		}
+		
+		return compteur;
 	}
 }

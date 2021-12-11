@@ -74,5 +74,8 @@ class FileManagerTest {
 		assertEquals(freepage,nextpageidheader);
 	}
 	
-	
+	@Test
+	public void fullDataPage() {
+		
+	}
 }

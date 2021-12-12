@@ -1,3 +1,8 @@
+/**
+ * Classe contenant le Main de l'application
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ */
+
 public class Main {
 
 	public static void main(String[] args) {

@@ -8,6 +8,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Classe de tests pour le FileManager
+ * @author Hu Tony
+ *
+ */
+
 //IMPORTANT: USE ON EMPTY DATABASE, WILL RESET THE DATABASE
 class FileManagerTest {
 

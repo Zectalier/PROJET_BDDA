@@ -5,20 +5,27 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 
 /**
- * Classe qui gère la commande BATCH INSERT
- * @author Hu Tony
+ * Classe qui gère la commande BATCHINSERT
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  *
  */
 public class BatchInsertCommand {
 	RelationInfo relInfo;
 	String filename;
 	
+	/**
+	 * Constructeur
+	 * @param reponse - String, la commande donnée par l'uilisateur
+	 */
 	public BatchInsertCommand(String reponse) {
 		String[] chaine = reponse.split(" ");
 		relInfo = Catalog.INSTANCE.findRelation(chaine[2]);
 		filename = chaine[5];
 	}
 	
+	/**
+	 * Methode qui permet d'executer la commande BATCHINSERT
+	 */
 	public void Execute() {
 		try {
 			FileReader fr = new FileReader("../"+filename);

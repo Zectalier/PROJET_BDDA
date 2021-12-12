@@ -2,7 +2,7 @@
  * Classe qui correspond au Rid (Record Id, donc identifiant) d’un enregistrement. 
  * La classe contient un PageId qui indique la page à laquelle appartient le record et 
  * un slotIdx, un entier, qui est l’indice de la case où le record est stocké.
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  *
  */
 public class Rid {

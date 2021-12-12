@@ -1,17 +1,28 @@
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
+/**
+ * Classe qui gère la commande SELECTMONO
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ *
+ */
 public class SelectMonoCommand {
 	RelationInfo relInfo;
 	ArrayList<Record> record;
 	String[] chaine;
 	
+	/**
+	 * Constructeur
+	 * @param reponse - String, la commande donnée par l'utilisateur
+	 */
 	public SelectMonoCommand(String reponse) {
 		chaine = reponse.split(" ");
 		relInfo = Catalog.INSTANCE.findRelation(chaine[3]);
 		record = FileManager.INSTANCE.getAllRecords(relInfo);
 	}
 	
+	/**
+	 * Methode qui permet d'executer la commande SELECTMONO
+	 */
 	public void Execute() {
 		try {
 			if(chaine.length==4) {	//cas où il n'y a pas de WHERE, donc pas de conditions

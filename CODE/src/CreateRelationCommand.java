@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Classe qui gère la commande CREATE RELATION
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  *
  */
 public class CreateRelationCommand {
@@ -12,6 +12,10 @@ public class CreateRelationCommand {
 	private ArrayList<String> listeNoms;
 	private ArrayList<String> listeTypes;
 	
+	/**
+	 * Constructeur
+	 * @param chaine - String, la commande donnée par l'utilisateur
+	 */
 	public CreateRelationCommand(String chaine) { //Chaine sous forme: CREATE RELATION NomRelation (NomCol_1:TypeCol_1,NomCol_2:TypeCol_2, ... NomCol_NbCol:TypeCol_NbCol)
 		listeNoms = new ArrayList<String>();
 		listeTypes = new ArrayList<String>();
@@ -30,6 +34,9 @@ public class CreateRelationCommand {
 		}
 	}
 	
+	/**
+	 * Methode qui permet d'executer la commande CREATE RELATION
+	 */
 	public void Execute() {
 		PageID headerPage = FileManager.INSTANCE.createHeaderPage();
 		ArrayList<ColInfo> listeColInfo = new ArrayList<ColInfo>();

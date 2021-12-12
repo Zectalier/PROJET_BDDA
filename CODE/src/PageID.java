@@ -1,11 +1,11 @@
+import java.io.Serializable;
+
 /**
  * Classe qui permet d'identifier une page afin de retrouver le fichier et 
  * l'emplacement du fichier dans laquelle la page se trouve
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  * 
  */
-
-import java.io.Serializable;
 
 public class PageID implements Serializable{
 

@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Un BufferManager contient une liste de Frame qui représente chacune le buffer d'une page 
  * et son état dans le BufferManager.<p>
  * Elle comporte une seule et unique instance.
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  *
  */
 public enum BufferManager {

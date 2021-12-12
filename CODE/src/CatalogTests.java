@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 /**
  * Classe de tests pour le Catalog
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  *
  */
 public class CatalogTests {	
@@ -15,9 +15,11 @@ public class CatalogTests {
 		DBParams.frameCount = 2;
 		
 		RelationInfo relInfo = new RelationInfo("test",0,new ArrayList<ColInfo>(),new PageID(0,0));
-		
+		// Initier le catalog
 		Catalog.INSTANCE.Init();
+		// Ajoute une relation dans le catalog
 		Catalog.INSTANCE.AddRelation(relInfo);
+		// Sauvegarde le catalog dans le fichier catalog.def
 		Catalog.INSTANCE.Finish();
 	}
   

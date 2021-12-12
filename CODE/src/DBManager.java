@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /**
  * Classe qui gère la Base de Donnée<p>
  * Elle comporte une seule et unique instance.
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  *
  */
 public enum DBManager {
@@ -27,7 +27,7 @@ public enum DBManager {
 	
 	/**
 	 * Méthode qui prend en argument une chaîne de caractères qui correspond à une commande et execute la commande adaptée
-	 * @param reponse - String
+	 * @param reponse - String, la commande donnée en entrée par l'utilisateur
 	 */
 	public void ProcessCommand(String reponse) {
 		String[] chaine = reponse.split(" ");
@@ -69,7 +69,12 @@ public enum DBManager {
 		}
 	}
 	
-	//on cherche l'indice de la colonne correspondant à la condition dans RelationInfo en vérifiant nomCom=condition[0]
+	/**
+	 * Methode qui recherche l'indice de la colonne correspondant à la condition dans RelationInfo en vérifiant nomCom=string
+	 * @param relInfo - RelationInfo, 
+	 * @param string - String, nomde la colonne donnée par l'utilisateur
+	 * @return l'indice de la colonne dans RelationInfo
+	 */
 	private int chercheIndiceColonne(RelationInfo relInfo, String string) {
 		for (int i = 0; i < relInfo.getListe().size(); i++) {
 			if(relInfo.getListe().get(i).getNom_col().equals(string)) {
@@ -79,7 +84,13 @@ public enum DBManager {
 		return -1;
 	}
 	
-	//on vérifie une condition du SELECTMONO
+	/**
+	 * Methode qui vérifie une condition du SELECTMONO
+	 * @param chaine - String, la conditions WHERE du SELECTMONO
+	 * @param record - Record
+	 * @param relInfo - RelationInfo
+	 * @return Vrai si la condition est vérifié
+	 */
 	private boolean VerifCondition(String chaine,Record record, RelationInfo relInfo) {
 		//on split avec le séparateur <>, s'il n'y a pas de <> dans l'expression, alors il n'y aura qu'un seul élément dans condition, sinon, il y en aura 2 et donc, la condition à vérifier est le <>
 		String[]condition=chaine.split("<>");
@@ -208,13 +219,13 @@ public enum DBManager {
 		return false;
 	}
 	
-	//on vérif toutes les conditions en faisant une boucle sur le nombre de conditions en utilisant la méthode précédente pour chaque condition
 	/**
 	 * Méthode qui vérifie si les valeurs du record respectent les condions données
+	 * On vérif toutes les conditions en faisant une boucle sur le nombre de conditions en utilisant la méthode précédente pour chaque condition
 	 * @param conditions - ArrayList&lt;String&gt;
 	 * @param record - Record
 	 * @param relInfo - RelationInfo
-	 * @return boolean
+	 * @return boolean, retourne TRUE si toutes les conditions sont verifiées
 	 */
 	public boolean VerifToutesConditions(ArrayList<String>conditions,Record record, RelationInfo relInfo) {
 		for (int i = 0; i < conditions.size(); i++) {

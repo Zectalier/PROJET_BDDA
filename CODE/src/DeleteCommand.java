@@ -2,13 +2,17 @@ import java.util.ArrayList;
 
 /**
  * Classe qui gère la commande DELETE
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  *
  */
 public class DeleteCommand {
 	RelationInfo relInfo;
 	ArrayList<String> conditions;
 	
+	/**
+	 * Constructeur
+	 * @param reponse, la commande donnée par l'utilisateur
+	 */
 	public DeleteCommand(String reponse) {
 		String[] chaine = reponse.split(" ");
 		relInfo = Catalog.INSTANCE.findRelation(chaine[2]);
@@ -18,6 +22,9 @@ public class DeleteCommand {
 		}
 	}
 	
+	/**
+	 * Methode qui permet d'executer la methode DELETE
+	 */
 	public void Execute() {
 		int compteur=0;
 		try {

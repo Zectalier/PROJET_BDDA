@@ -1,12 +1,20 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-
+/**
+ * Classe qui gère la commande UPDATE
+ * @author HU tony
+ *
+ */
 public class UpdateCommand {
 	RelationInfo relInfo;
 	ArrayList<String> updateTo;
 	ArrayList<String> listeCol;
 	ArrayList<String> conditions;
 	
+	/**
+	 * Constructeur
+	 * @param reponse - String, la commande donnée par l'utilisateur
+	 */
 	public UpdateCommand(String reponse) {
 		String[] chaine = reponse.split(" ");
 		relInfo = Catalog.INSTANCE.findRelation(chaine[1]);
@@ -28,6 +36,9 @@ public class UpdateCommand {
 		}
 	}
 	
+	/**
+	 * Methode qui permet d'executer la commande UPDATE
+	 */
 	public void Execute() {
 		int compteur = 0;
 		try {

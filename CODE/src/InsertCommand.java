@@ -1,10 +1,18 @@
-
+/**
+ * Classe qui gére la commande INSERT 
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ *
+ */
 public class InsertCommand {
 	RelationInfo relInfo;
 	PageID freePage;
 	Record record;
 	String[] values;
 	
+	/**
+	 * Constructeur
+	 * @param reponse - String, la commande donnée par l'utilisateur
+	 */
 	public InsertCommand(String reponse) {
 		reponse=reponse.replace("(","");
 		reponse=reponse.replace(")","");
@@ -15,6 +23,9 @@ public class InsertCommand {
 		values= chaine[4].split(",");
 	}
 	
+	/**
+	 * Methode qui permet d'executer la commande INSERT
+	 */
 	public void Execute() {
 		for (int i = 0; i < values.length; i++) {
 			record.getValues().add(values[i]);

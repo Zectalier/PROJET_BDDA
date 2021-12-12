@@ -2,7 +2,7 @@ import java.io.Serializable;
 
 /**
  * Classe qui permet de gérer les informations d'une colonne
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  *
  */
 public class ColInfo implements Serializable{
@@ -36,6 +36,4 @@ public class ColInfo implements Serializable{
 	public String getType_col() {
 		return type_col;
 	}
-
-	// Restreindre les types a int, float et String à taille fixe
 }

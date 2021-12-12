@@ -1,6 +1,6 @@
 /**
  * Classe qui gère les paramètres du SGBD
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  */
 public class DBParams {
 

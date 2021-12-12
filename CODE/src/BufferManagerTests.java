@@ -2,7 +2,7 @@ import java.nio.ByteBuffer;
 
 /**
  * Classe de tests pour le BufferManager
- * @author Hu Tony
+ * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
  *
  */
 public class BufferManagerTests {

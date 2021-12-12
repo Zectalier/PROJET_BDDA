@@ -6,7 +6,9 @@ import java.util.NoSuchElementException;
 
 /**
  * Classe qui gère la commande BATCHINSERT
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class BatchInsertCommand {

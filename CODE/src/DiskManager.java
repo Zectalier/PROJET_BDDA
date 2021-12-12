@@ -8,7 +8,9 @@ import java.io.RandomAccessFile;
  * Classe qui permet d'allouer de nouvelles pages dans des fichiers sur le disque 
  * ainsi que de lire et écrire des pages dans ces fichiers du disque.<p>
  * Elle comporte une seule et unique instance.
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public enum DiskManager {

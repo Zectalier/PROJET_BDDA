@@ -2,7 +2,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 /**
  * Classe qui gère la commande UPDATE
- * @author HU tony
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class UpdateCommand {

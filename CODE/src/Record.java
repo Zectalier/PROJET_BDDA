@@ -3,7 +3,9 @@ import java.util.ArrayList;
 
 /**
  * Classe qui correspond à un enregistrement/tuple dans une relation
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class Record {

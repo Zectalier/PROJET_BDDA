@@ -1,7 +1,9 @@
 import java.util.Scanner;
 /**
  * Classe qui contient le menu pour le main
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson 
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class Menu {

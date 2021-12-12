@@ -2,7 +2,9 @@ import java.util.ArrayList;
 
 /**
  * Classe qui gère la commande CREATE RELATION
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class CreateRelationCommand {

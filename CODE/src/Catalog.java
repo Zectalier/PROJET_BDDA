@@ -9,7 +9,9 @@ import java.util.ArrayList;
 /**
  * Classe qui contient les informations de schéma pour l'ensemble de la base de données.<p>
  * Elle comporte une seule et unique instance.
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public enum Catalog {

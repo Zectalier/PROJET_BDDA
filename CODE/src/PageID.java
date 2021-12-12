@@ -3,7 +3,9 @@ import java.io.Serializable;
 /**
  * Classe qui permet d'identifier une page afin de retrouver le fichier et 
  * l'emplacement du fichier dans laquelle la page se trouve
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  * 
  */
 

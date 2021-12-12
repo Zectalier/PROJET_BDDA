@@ -1,6 +1,8 @@
 /**
  * Classe qui gère la commande EXIT
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class ExitCommand {

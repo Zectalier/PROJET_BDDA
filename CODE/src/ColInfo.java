@@ -2,7 +2,9 @@ import java.io.Serializable;
 
 /**
  * Classe qui permet de gérer les informations d'une colonne
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class ColInfo implements Serializable{

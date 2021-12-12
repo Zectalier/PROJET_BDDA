@@ -10,7 +10,9 @@ import java.util.ArrayList;
  * - pageId de la headerPage,<br>
  * - la taille d'un record<br>
  * - nombre de slot.
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class RelationInfo implements Serializable {

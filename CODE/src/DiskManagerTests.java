@@ -2,7 +2,9 @@ import java.nio.*;
 
 /**
  * Classe de tests pour le DiskManager
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class DiskManagerTests {

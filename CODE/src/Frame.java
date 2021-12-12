@@ -4,7 +4,9 @@ import java.nio.*;
  * Classe permettant de représenter une Page dans le BufferManager.<p>
  * Chaque Frame contient un buffer avec le contenu de la page, le PageID de la page, 
  * un pinCount et un flag dirty pour savoir si la Page a été modifiée.
- * @author Hu Tony, SILVA Andrio, CONSTANTINE Benjohnson
+ * @author Hu Tony
+ * @author CONSTANTINE Benjohnson
+ * @author SILVA Andrio
  *
  */
 public class Frame {

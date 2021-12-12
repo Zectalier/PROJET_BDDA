@@ -4,6 +4,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
+/**
+ * Classe qui gère la commande BATCH INSERT
+ * @author Hu Tony
+ *
+ */
 public class BatchInsertCommand {
 	RelationInfo relInfo;
 	String filename;

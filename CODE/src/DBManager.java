@@ -1,25 +1,34 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.NoSuchElementException;
 
+/**
+ * Classe qui gère la Base de Donnée<p>
+ * Elle comporte une seule et unique instance.
+ * @author Hu Tony
+ *
+ */
 public enum DBManager {
 	
 	DBMANAGER;
 
+	/**
+	 * Méthode qui contient un appel à la méthode Finish du Catalog et un appel à la méthode FlushAll du BufferManager
+	 */
 	public void Finish() {
 		BufferManager.INSTANCE.flushAll();
 		Catalog.INSTANCE.Finish();
 	}
 
+	/**
+	 * Méthode qui contient un appel à la méthode Init du Catalog
+	 */
 	public void Init() {
 		Catalog.INSTANCE.Init();
 	}
 	
+	/**
+	 * Méthode qui prend en argument une chaîne de caractères qui correspond à une commande et execute la commande adaptée
+	 * @param reponse - String
+	 */
 	public void ProcessCommand(String reponse) {
 		String[] chaine = reponse.split(" ");
 		switch (chaine[0]) {
@@ -59,6 +68,7 @@ public enum DBManager {
 				System.err.println("Erreur : commande inconnue");
 		}
 	}
+	
 	//on cherche l'indice de la colonne correspondant à la condition dans RelationInfo en vérifiant nomCom=condition[0]
 	private int chercheIndiceColonne(RelationInfo relInfo, String string) {
 		for (int i = 0; i < relInfo.getListe().size(); i++) {
@@ -199,6 +209,13 @@ public enum DBManager {
 	}
 	
 	//on vérif toutes les conditions en faisant une boucle sur le nombre de conditions en utilisant la méthode précédente pour chaque condition
+	/**
+	 * Méthode qui vérifie si les valeurs du record respectent les condions données
+	 * @param conditions - ArrayList&lt;String&gt;
+	 * @param record - Record
+	 * @param relInfo - RelationInfo
+	 * @return boolean
+	 */
 	public boolean VerifToutesConditions(ArrayList<String>conditions,Record record, RelationInfo relInfo) {
 		for (int i = 0; i < conditions.size(); i++) {
 			if(!VerifCondition(conditions.get(i),record,relInfo))

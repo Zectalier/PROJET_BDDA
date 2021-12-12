@@ -1,6 +1,12 @@
 import java.util.ArrayList;
 
+/**
+ * Classe de tests pour le Catalog
+ * @author Hu Tony
+ *
+ */
 public class CatalogTests {	
+	
   public static void main(String[]args) {
   
 		DBParams.DBPath = "../DB/";
@@ -14,4 +20,5 @@ public class CatalogTests {
 		Catalog.INSTANCE.AddRelation(relInfo);
 		Catalog.INSTANCE.Finish();
 	}
+  
 }

@@ -1,5 +1,10 @@
 import java.io.File;
 
+/**
+ * Classe qui gère la commande DROPDB
+ * @author Hu Tony
+ *
+ */
 public class DropDBCommand {
 	File dir;
 	

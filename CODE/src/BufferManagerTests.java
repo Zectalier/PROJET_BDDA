@@ -1,5 +1,10 @@
 import java.nio.ByteBuffer;
 
+/**
+ * Classe de tests pour le BufferManager
+ * @author Hu Tony
+ *
+ */
 public class BufferManagerTests {
 
 	public static void main(String[] args) {

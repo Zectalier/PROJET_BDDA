@@ -1,4 +1,7 @@
-
+/**
+ * Classe qui gère les paramètres du SGBD
+ * @author Hu Tony
+ */
 public class DBParams {
 
 	public static String DBPath;

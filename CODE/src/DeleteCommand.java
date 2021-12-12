@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/**
+ * Classe qui gère la commande DELETE
+ * @author Hu Tony
+ *
+ */
 public class DeleteCommand {
 	RelationInfo relInfo;
 	ArrayList<String> conditions;

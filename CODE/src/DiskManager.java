@@ -4,8 +4,21 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class DiskManager {
+/**
+ * Classe qui permet d'allouer de nouvelles pages dans des fichiers sur le disque 
+ * ainsi que de lire et écrire des pages dans ces fichiers du disque.<p>
+ * Elle comporte une seule et unique instance.
+ * @author Hu Tony
+ *
+ */
+public enum DiskManager {
 
+	DISKMANAGER;
+	
+	/**
+	 * Alloue une page dans le disque en écrivant une nouvelle page "vide" dans un fichier qui possède encore de la place ou sinon dans un nouveau fichier
+	 * @return PageID de la page qui vient d'être alloué
+	 */
 	public static PageID AllocPage() {
 
 		boolean found = false;
@@ -57,13 +70,17 @@ public class DiskManager {
 		// boucle prÃ©cÃ©dente
 	}
 
+	/**
+	 * Rempli le ByteBuffer donné en argument par le contenu de la page identifié par la PageID pageId
+	 * @param pageId le PageID de la page
+	 * @param buff le ByteBuffer qu'on souhaite remplir
+	 */
 	public static void ReadPage(PageID pageId, ByteBuffer buff) {
 		try {
 			RandomAccessFile file = new RandomAccessFile(DBParams.DBPath + "f" + pageId.getFileId() + ".df", "r");
 			int f_byte = DBParams.PageSize * pageId.getPageId();
 			file.seek(f_byte);
 			file.read(buff.array());
-			System.out.println();
 			file.close();
 		} catch (FileNotFoundException e) {
 			System.out.println(e.toString());
@@ -72,6 +89,11 @@ public class DiskManager {
 		}
 	}
 
+	/**
+	 * Ecrit dans la page identifié par la PageID pageId le contenu du ByteBuffer buff
+	 * @param pageId la PageID de la page
+	 * @param buff le ByteBuffer qui contient le nouveau contenu de la page
+	 */
 	public static void WritePage(PageID pageId, ByteBuffer buff) {
 		try {
 			RandomAccessFile file = new RandomAccessFile(DBParams.DBPath + "f" + pageId.getFileId() + ".df", "rw");

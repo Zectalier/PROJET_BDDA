@@ -1,14 +1,31 @@
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+/**
+ * Classe qui permet de gérer les fichiers de la SGBD.<p>
+ * Elle comporte une seule et unique instance.
+ * @author Hu Tony
+ *
+ */
 public enum FileManager {
 
 	INSTANCE;
 
+	/**
+	 * Retourne l'instance du FileManager
+	 * @return INSTANCE
+	 */
 	public FileManager getInstance(){
 		return INSTANCE;
 	}
 
+	/**
+	 * Cette méthode lit un PageId de chaînage depuis une page – soit-elle la HeaderPage ou une page de données.<br>
+	 * Le buffer correspond au contenu de la page, et le boolean first si on lit le premier ou le 2ème des PageIds.
+	 * @param buff - ByteBuffer, le buffer depuis lequel on souhaite lire
+	 * @param first - boolean, true si on lit la premiere page, false sinon
+	 * @return PageID
+	 */
 	public PageID readPageIdFromPageBuffer(ByteBuffer buff, boolean first){
 		PageID pageId;
 		int pageIdx;
@@ -29,6 +46,13 @@ public enum FileManager {
 		return pageId;
 	}
 
+	/**
+	 * Cette méthode écrit un PageId de chaînage dans une page – soit-elle la HeaderPage ou une page de données.<br>
+	 * Le buffer correspond au contenu de la page, et le boolean first si on écrit le premier ou le 2ème des PageIds.
+	 * @param pageId - PageID, le pageId qu'on souhaite écrire
+	 * @param buff - ByteBuffer, le buffer depuis lequel on souhaite écrire
+	 * @param first - boolean, true si on lit la premiere page, false sinon
+	 */
 	public void writePageIdToPageBuffer(PageID pageId,ByteBuffer buff, boolean first){
 		if(first) {
 			buff.position(0);
@@ -44,6 +68,10 @@ public enum FileManager {
 		}
 	}
 
+	/**
+	 * Méthode qui gère l'allocation d’une nouvelle page via AllocPage du DiskManager, la nouvelle page alloué sera notre nouveau headerPage.
+	 * @return
+	 */
 	public PageID createHeaderPage(){
 		PageID pageId = DiskManager.AllocPage();
 		ByteBuffer buff = BufferManager.INSTANCE.getPage(pageId);
@@ -53,6 +81,11 @@ public enum FileManager {
 		return pageId;
 	}
 
+	/**
+	 * Méthode qui rajoute une page de données « vide » au Heap File correspondant à la relation identifiée par relInfo, et retourner le PageId de cette page.
+	 * @param relInfo - RelationInfo
+	 * @return PageId
+	 */
 	public PageID addDataPage(RelationInfo relInfo) {
 		PageID pageId = DiskManager.AllocPage();
 		PageID headerPage = relInfo.getHeaderPageId();
@@ -88,6 +121,12 @@ public enum FileManager {
 		return pageId;
 	}
 	
+	/**
+	 * Retourne, pour la relation désignée par relInfo, le PageId d’une page de données sur laquelle il reste des cases libres.<br>
+	 * Si une telle page n’existe pas, créée une nouvelle page et la chaine à l'headerPage
+	 * @param relInfo - RelationInfo
+	 * @return PageID
+	 */
 	public PageID getFreeDataPage(RelationInfo relInfo) {
 		PageID headerPage = relInfo.getHeaderPageId();
 		PageID freePageId;
@@ -105,6 +144,13 @@ public enum FileManager {
 		return freePageId;
 	}
 
+	/**
+	 * Méthode qui écrit l’enregistrement record dans la page de données identifiée par pageId, et retourne son Rid
+	 * @param relinfo - RelationInfo
+	 * @param rec - Record
+	 * @param pageId - PageID
+	 * @return Rid
+	 */
 	public Rid writeRecordToDataPage (RelationInfo relinfo, Record rec, PageID pageId) {
 		PageID headerPage = rec.getRelationInfo().getHeaderPageId();
 		ByteBuffer buff = BufferManager.INSTANCE.getPage(headerPage);
@@ -189,6 +235,12 @@ public enum FileManager {
 		return new Rid(pageId, slotId);
 	}
 	
+	/**
+	 * Méthode qui renvoyer la liste des records stockés dans la page identifiée par pageId.
+	 * @param relinfo - RelationInfo
+	 * @param pageId - PageID
+	 * @return ArrayList&lt;Record&gt;
+	 */
 	public ArrayList<Record> getRecordsInDataPage(RelationInfo relinfo, PageID pageId) {
 		ArrayList<Record> listRec = new ArrayList<Record>();
 		Record rec;
@@ -201,14 +253,27 @@ public enum FileManager {
 			listRec.add(rec);
 		}
 		BufferManager.INSTANCE.freePage(pageId, false);
+		buff = BufferManager.INSTANCE.getPage(new PageID(0,0));
+		BufferManager.INSTANCE.freePage(new PageID(0,0), false);
 		return listRec;
 	}
 	
+	/**
+	 * Insert un record donné dans la relation
+	 * @param relinfo - RelationInfo
+	 * @param rec - Record
+	 * @return Rid
+	 */
 	public Rid insertRecordIntoRelation(RelationInfo relinfo, Record rec) {
 		PageID freePage = getFreeDataPage(relinfo);
 		return writeRecordToDataPage(relinfo,rec,freePage);
 	}
 	
+	/**
+	 * Retourne sous une ArrayList&lt;Record&gt; tous les records pour une RelationInfo
+	 * @param relinfo - RelationInfo
+	 * @return ArrayList&lt;Record&gt;
+	 */
 	public ArrayList<Record> getAllRecords(RelationInfo relinfo) {
 		ArrayList<Record> listRec = new ArrayList<Record>();
 		PageID headerPage = relinfo.getHeaderPageId();
@@ -255,6 +320,13 @@ public enum FileManager {
 		return listRec;
 	}
 	
+	/**
+	 * Méthode qui supprime les records d'une page respectant la condition donnée et retourne le nombre de records supprimé
+	 * @param relInfo - RelationInfo
+	 * @param condition - ArrayList&lt;String&gt;
+	 * @param pageId - PageID
+	 * @return int
+	 */
 	public int deleteRecordInDataPage(RelationInfo relInfo, ArrayList<String> condition, PageID pageId) {
 		int compteur = 0;
 		Record rec;
@@ -290,6 +362,12 @@ public enum FileManager {
 		return compteur;
 	}
 	
+	/**
+	 * Méthode qui supprime tous les records d'une relation respectant la condition donnée et retourne le nombre de records supprimé
+	 * @param relInfo - RelationInfo
+	 * @param condition - ArrayList&lt;String&gt;
+	 * @return
+	 */
 	public int deleteAllRecords(RelationInfo relInfo, ArrayList<String> condition) {
 		int compteur = 0;
 		PageID headerPage = relInfo.getHeaderPageId();
@@ -336,6 +414,14 @@ public enum FileManager {
 		return compteur;
 	}
 	
+	/**
+	 * Méthode qui permet de mettre à jour les valeurs de tous les records dans une page qui respectent les conditions données et retourne le nombre de record mis à jour 
+	 * @param relInfo - RelationInfo
+	 * @param updateTo - ArrayList&lt;String&gt;
+	 * @param condition - ArrayList&lt;String&gt;
+	 * @param pageId - PageID
+	 * @return int
+	 */
 	public int updateRecordInDataPage(RelationInfo relInfo,ArrayList<String> updateTo, ArrayList<String> condition, PageID pageId) {
 		int compteur = 0;
 		Record rec;
@@ -356,6 +442,13 @@ public enum FileManager {
 		return compteur;
 	}
 	
+	/**
+	 * Méthode qui permet de mettre à jour les valeurs de tous les records dans une relation qui respectent les conditions données et retourne le nombre de record mis à jour 
+	 * @param relInfo - RelationInfo
+	 * @param updateTo - ArrayList&lt;String&gt;
+	 * @param condition - ArrayList&lt;String&gt;
+	 * @return int
+	 */
 	public int updateAllRecords(RelationInfo relInfo,ArrayList<String> updateTo, ArrayList<String> condition) {
 		int compteur = 0;
 		PageID headerPage = relInfo.getHeaderPageId();

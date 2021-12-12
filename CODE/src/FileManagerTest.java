@@ -17,7 +17,8 @@ class FileManagerTest {
 		DBParams.PageSize = 4096;
 		DBParams.maxPagesPerFile = 4;
 		DBParams.frameCount = 2;
-		DBManager.DBMANAGER.DropDB();
+		DropDBCommand dropDB= new DropDBCommand();
+		dropDB.Execute();
 		PageID headerpage = FileManager.INSTANCE.createHeaderPage();
 		ColInfo colinfo = new ColInfo("test","int");
 		ArrayList<ColInfo> al = new ArrayList<ColInfo>();
@@ -38,6 +39,7 @@ class FileManagerTest {
 		BufferManager.INSTANCE.flushAll();
 		Catalog.INSTANCE.Finish();
 	}
+	
 	/**
 	 * Ce test est la pour être sur que notre headerpage est créé avec les bonnes valeurs par défaut pour les pages: (-1,0) (-1,0)
 	 */

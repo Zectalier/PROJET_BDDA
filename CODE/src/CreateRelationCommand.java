@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/**
+ * Classe qui gère la commande CREATE RELATION
+ * @author Hu Tony
+ *
+ */
 public class CreateRelationCommand {
 
 	private String nomRelation;

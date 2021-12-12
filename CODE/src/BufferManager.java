@@ -1,10 +1,22 @@
 import java.nio.*;
 import java.util.ArrayList;
 
+/**
+ * Classe qui permet de gérer les différents buffer qui vont être utilisé par les autres classes.<p>
+ * Un BufferManager contient une liste de Frame qui représente chacune le buffer d'une page 
+ * et son état dans le BufferManager.<p>
+ * Elle comporte une seule et unique instance.
+ * @author Hu Tony
+ *
+ */
 public enum BufferManager {
 
 	INSTANCE;
 
+	/**
+	 * Retourne l'instance du BufferManager
+	 * @return INSTANCE
+	 */
 	public BufferManager getInstance() {
 		return INSTANCE;
 	}
@@ -19,6 +31,14 @@ public enum BufferManager {
 		listFrame = liste;
 	}
 
+	/**
+	 * Retourne le ByteBuffer compris dans la Frame de la page si celle-ci est déjà dans le BufferManager et incrémente son pinCount, 
+	 * sinon tente de retirer la Frame utilisée la plus récente du BufferManager 
+	 * tout en actualisant ses données sur le disque si celui-ci est dirty 
+	 * , la remplace par une nouvelle Frame représentant la page entrée en argument et retourne son ByteBuffer.
+	 * @param page - le PageID de la page
+	 * @return ByteBuffer
+	 */
 	public ByteBuffer getPage(PageID page) {
 
 		Frame temp = new Frame();
@@ -66,6 +86,11 @@ public enum BufferManager {
 		}
 	}
 
+	/**
+	 * Libère la page entrée en argument en desincrémentant son pinCount et actualise le flag dirty de la page par celui donné en argument
+	 * @param page - le PageID de la page
+	 * @param valdirty - le flag de la page
+	 */
 	public void freePage(PageID page, boolean valdirty) {
 		for(int i = 0; i<listFrame.size();i++) {
 			if(listFrame.get(i).getPageId()!=null) {
@@ -89,6 +114,9 @@ public enum BufferManager {
 		return;
 	}
 
+	/**
+	 * Ecrit toute les pages dans le disque ayant un flag dirty true et remet à zéro toute les frames du BufferManager.
+	 */
 	public void flushAll() {
 		for(int i = 0; i<listFrame.size();i++) {
 			if(listFrame.get(i).isDirty() == true) {
@@ -101,6 +129,9 @@ public enum BufferManager {
 		}
 	}
 
+	/**
+	 * Remet à zéro toute les frames du BufferManager.
+	 */
 	public void reset() {
 		ArrayList<Frame> liste = new ArrayList<Frame>();
 		for(int i = 0;i<DBParams.frameCount;i++) {
@@ -109,6 +140,9 @@ public enum BufferManager {
 		listFrame = liste;
 	}
 	
+	/**
+	 * Méthode qui permet d'afficher le contenu du BufferManager.
+	 */
 	public void printAll() {
 		System.out.println("//////////////////////////////////////////////////////");
 		for(int i = 0; i<listFrame.size();i++) {

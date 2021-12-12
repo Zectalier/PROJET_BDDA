@@ -1,9 +1,10 @@
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.io.File;
 import java.nio.*;
-import java.nio.charset.StandardCharsets;
 
+/**
+ * Classe de tests pour le DiskManager
+ * @author Hu Tony
+ *
+ */
 public class DiskManagerTests {
 
 	public static void main(String[] args) {

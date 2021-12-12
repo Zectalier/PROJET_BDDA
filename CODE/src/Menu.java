@@ -41,7 +41,8 @@ public class Menu {
 			String reponse = scan.nextLine();
 			switch(reponse){
 				case "EXIT":
-					DBManager.DBMANAGER.Exit();
+					ExitCommand exit = new ExitCommand();
+					exit.Execute();
 					end=true;
 					break;
 				default: 

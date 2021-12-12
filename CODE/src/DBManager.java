@@ -19,7 +19,7 @@ public enum DBManager {
 	public void Init() {
 		Catalog.INSTANCE.Init();
 	}
-
+	
 	public void ProcessCommand(String reponse) {
 		String[] chaine = reponse.split(" ");
 		switch (chaine[0]) {
@@ -29,96 +29,36 @@ public enum DBManager {
 				System.out.println("Relation Créée");
 				break;
 			case "DROPDB":
-				DropDB();
+				DropDBCommand dropDB= new DropDBCommand();
+				dropDB.Execute();
 				System.out.println("La Base de données à été remise à zéro");
 				break;
 			case "INSERT":
-				Insert(reponse);
+				InsertCommand insert = new InsertCommand(reponse);
+				insert.Execute();
 				System.out.println("Le Record a été inséré");
 				break;
 			case "BATCHINSERT":
-				BatchInsert(reponse);
+				BatchInsertCommand batchInsert = new BatchInsertCommand(reponse);
+				batchInsert.Execute();
 				System.out.println("Tout les tuples ont été insérés");
 				break;
 			case "SELECTMONO":
-				SelectMono(reponse);
+				SelectMonoCommand selectMono = new SelectMonoCommand(reponse);
+				selectMono.Execute();
 				break;
 			case "DELETE":
-				delete(reponse);
+				DeleteCommand delete = new DeleteCommand(reponse);
+				delete.Execute();
 				break;
 			case "UPDATE":
-				update(reponse);
+				UpdateCommand update = new UpdateCommand(reponse);
+				update.Execute();
 				break;
 			default:
 				System.err.println("Erreur : commande inconnue");
 		}
 	}
-	
-	public void Exit() {
-		Finish();
-		return;
-	}
-	
-	public void DropDB() {
-		BufferManager.INSTANCE.reset();
-		Catalog.INSTANCE.reset();
-		File dir = new File(DBParams.DBPath);
-		for(File file: dir.listFiles()) {
-		    if (!file.isDirectory()) { 
-		        file.delete();
-		    }
-		}
-	}
-
-	public void Insert(String reponse) {
-		reponse=reponse.replace("(","");
-		reponse=reponse.replace(")","");
-		String[] chaine = reponse.split(" ");
-		
-		try {
-			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[2]);
-			PageID freePage = FileManager.INSTANCE.getFreeDataPage(relInfo);
-			Record record = new Record(relInfo);
-			String[] values= chaine[4].split(",");
-			for (int i = 0; i < values.length; i++) {
-				record.getValues().add(values[i]);
-			}
-			FileManager.INSTANCE.writeRecordToDataPage(relInfo, record, freePage);
-		} catch (NoSuchElementException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-	
-	public void BatchInsert(String reponse) {
-		String[] chaine = reponse.split(" ");
-		try {
-			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[2]);
-			
-			String filename = chaine[5];
-			FileReader fr = new FileReader("../"+filename);
-			BufferedReader br = new BufferedReader(fr);
-			String line;
-			Record record;
-			while((line = br.readLine())!=null){
-				String[] lotValues = line.split(",");
-				record=new Record(relInfo);
-				for (int i = 0; i < lotValues.length; i++) {
-					record.getValues().add(lotValues[i]);
-				}
-				PageID freePage = FileManager.INSTANCE.getFreeDataPage(relInfo);
-				FileManager.INSTANCE.writeRecordToDataPage(relInfo, record, freePage);
-			}
-			br.close();
-			fr.close();
-		}catch (NoSuchElementException e) {
-			System.out.println(e.getMessage());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	//on cherche l'indice de la colonne correspondant à la condition dans RelationInfo en vérifiant nomCom=condition[0]
 	private int chercheIndiceColonne(RelationInfo relInfo, String string) {
 		for (int i = 0; i < relInfo.getListe().size(); i++) {
@@ -266,96 +206,5 @@ public enum DBManager {
 			
 		}
 		return true;
-	}
-	
-	public void SelectMono(String reponse) {
-		String[] chaine = reponse.split(" ");
-		try {
-			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[3]);
-			ArrayList<Record> record = FileManager.INSTANCE.getAllRecords(relInfo);
-			if(chaine.length==4) {	//cas où il n'y a pas de WHERE, donc pas de conditions
-				if(chaine[1].equals("*")){ //on affiche tous les records de la relation
-					int recordnonvide = 0;
-					for (int i = 0; i < record.size(); i++) {
-						if(!record.get(i).getValues().isEmpty()) {
-							for (int j = 0; j < record.get(i).getValues().size(); j++) {
-								System.out.print(record.get(i).getValues().get(j)+";");
-							}
-							recordnonvide++;
-							System.out.println("");
-						}
-					}
-					System.out.println("Total Record = " + recordnonvide);	
-				}else {
-					System.out.println("");
-				}
-			}else{ //il y a des conditions WHERE dans le SELECTMONO
-				ArrayList<String> conditions = new ArrayList<String>();
-				int compteur=0;
-				for (int i = 5; i < chaine.length; i+=2) {
-					conditions.add(chaine[i]);	//on ajoute toutes les conditions dans une ArrayList
-				}
-				for (int i = 0; i < record.size(); i++) {
-					if(!record.get(i).getValues().isEmpty()) {
-						if(VerifToutesConditions(conditions, record.get(i), relInfo)) { //on regarde si le record vérifie toutes les conditions
-							for (int j = 0; j < record.get(i).getValues().size(); j++) {
-								System.out.print(record.get(i).getValues().get(j)+";");
-							}
-							compteur++;
-							System.out.println("");
-						}
-					}
-				}
-				System.out.println("Total Record = " + compteur);
-			}
-			
-		}catch(NoSuchElementException e) {
-			System.out.println(e.getMessage());
-		}
-		
-	}
-	
-	public void delete(String reponse) {
-		String[] chaine = reponse.split(" ");
-		int compteur = 0;
-		try {
-			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[2]);
-			ArrayList<String> conditions = new ArrayList<String>();
-			for (int i = 4; i < chaine.length; i+=2) {
-				conditions.add(chaine[i]);	//on ajoute toutes les conditions dans une ArrayList
-			}
-			compteur = FileManager.INSTANCE.deleteAllRecords(relInfo, conditions);
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		System.out.println(compteur+" tuple(s) a(ont) été(s) supprimé(s)");
-	}
-	
-	public void update(String reponse) {
-		String[] chaine = reponse.split(" ");
-		int compteur=0;
-		try {
-			RelationInfo relInfo = Catalog.INSTANCE.findRelation(chaine[1]);
-			ArrayList<String> updateTo = new ArrayList<String>(Arrays.asList(chaine[3].split(",")));
-			ArrayList<String> listeCol = new ArrayList<String>();
-			for(String str : updateTo) {
-				if(!listeCol.contains(str.substring(0,str.indexOf("=")))) {
-					listeCol.add(str.substring(0,str.indexOf("=")));
-				}
-				else {
-					System.err.println("Attention une colonne de la relation apparaît plusieurs fois");
-					return;
-				}
-				str = str.substring(str.indexOf("="));
-			}
-			ArrayList<String> conditions = new ArrayList<String>();
-			for (int i = 5; i < chaine.length; i+=2) {
-				conditions.add(chaine[i]);	//on ajoute toutes les conditions dans une ArrayList
-			}
-			compteur = FileManager.INSTANCE.updateAllRecords(relInfo, updateTo, conditions);
-		}catch(Exception e) {
-			System.out.println(e.getMessage());
-		}
-		System.out.println(compteur+" tuple(s) a(ont) été(s) mis à jour(s)");
-	}
+	}	
 }

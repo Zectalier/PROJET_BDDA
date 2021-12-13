@@ -45,6 +45,7 @@ public class UpdateCommand {
 		int compteur = 0;
 		try {
 			compteur = FileManager.INSTANCE.updateAllRecords(relInfo, updateTo, conditions);
+			BufferManager.INSTANCE.flushAll();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

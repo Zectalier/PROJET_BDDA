@@ -31,6 +31,7 @@ public class DeleteCommand {
 		int compteur=0;
 		try {
 			compteur = FileManager.INSTANCE.deleteAllRecords(relInfo, conditions);
+			BufferManager.INSTANCE.flushAll();
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

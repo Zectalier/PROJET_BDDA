@@ -11,7 +11,7 @@ public class DiskManagerTests {
 
 	public static void main(String[] args) {
 
-		// Tests Ã  faire si possible sur un dossier DB vide
+		// Tests à faire si possible sur un dossier DB vide
 
 		DBParams.DBPath = "../DB/";
 		DBParams.PageSize = 4096;
@@ -38,16 +38,16 @@ public class DiskManagerTests {
 		PageID page2 = new PageID();
 		page2 = DiskManager.AllocPage();
 
-		// Test allocation d'une troisiÃ¨me page dans le mÃªme fichier que page et page2
+		// Test allocation d'une troisième page dans le même fichier que page et page2
 		PageID page3 = new PageID();
 		page3 = DiskManager.AllocPage();
 
-		// Test allocation d'une quatriÃ¨me page dans le mÃªme fichier que page, page2
+		// Test allocation d'une quatrième page dans le même fichier que page, page2
 		// et page3
 		PageID page4 = new PageID();
 		page4 = DiskManager.AllocPage();
 
-		// Test allocation d'une page qui devra crÃ©er un nouveau fichier pour stocker
+		// Test allocation d'une page qui devra créer un nouveau fichier pour stocker
 		// la page
 		PageID page5 = new PageID();
 		page5 = DiskManager.AllocPage();
@@ -58,9 +58,9 @@ public class DiskManagerTests {
 		}
 
 		ByteBuffer buffer2 = ByteBuffer.allocate(DBParams.PageSize);
-		// Test Ã©criture de la page2 avec un tableau de byte rempli de 1
+		// Test écriture de la page2 avec un tableau de byte rempli de 1
 		DiskManager.WritePage(page2, buffer1);
-		// Test lecture de la page 2 modifiÃ©e
+		// Test lecture de la page 2 modifiée
 		System.out.println("");
 		System.out.println("Lecture de la page 2: ");
 		DiskManager.ReadPage(page2, buffer2);

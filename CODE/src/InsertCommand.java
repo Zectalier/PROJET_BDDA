@@ -31,8 +31,8 @@ public class InsertCommand {
 	public void Execute() {
 		for (int i = 0; i < values.length; i++) {
 			record.getValues().add(values[i]);
+			BufferManager.INSTANCE.flushAll();
 		}
 		FileManager.INSTANCE.writeRecordToDataPage(relInfo, record, freePage);
 	}
 }
-

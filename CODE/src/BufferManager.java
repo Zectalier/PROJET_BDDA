@@ -57,7 +57,7 @@ public enum BufferManager {
 					return temp.getBuffer();
 				}
 			}
-			//Sinon, vérifie si la frame à listFrame[i] est la dernière frame MRU qui à un PinCount à 0
+			//Sinon, vérifie si la frame �  listFrame[i] est la dernière frame MRU qui �  un PinCount �  0
 			else {
 				if(listFrame.get(i).getPinCount() == 0) {
 					indexmru = i;

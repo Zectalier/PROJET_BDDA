@@ -1,12 +1,7 @@
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 /**
  * Classe de tests pour le FileManager
@@ -14,15 +9,14 @@ import org.junit.jupiter.api.Test;
  *
  */
 
-//IMPORTANT: USE ON EMPTY DATABASE, WILL RESET THE DATABASE
-class FileManagerTest {
+public class FileManagerTest {
 
-	@BeforeAll
-	public static void setup() {
+	public static void main(String[] args) {
 		DBParams.DBPath = "../DB/";
 		DBParams.PageSize = 4096;
 		DBParams.maxPagesPerFile = 4;
 		DBParams.frameCount = 2;
+		
 		DropDBCommand dropDB= new DropDBCommand();
 		dropDB.Execute();
 		PageID headerpage = FileManager.INSTANCE.createHeaderPage();
@@ -33,57 +27,37 @@ class FileManagerTest {
 		Catalog.INSTANCE.AddRelation(reltest);
 		DBManager.DBMANAGER.Finish();
 		DBManager.DBMANAGER.Init();
-	}
-
-	@BeforeEach
-	public void beforeEach() {
+	
 		Catalog.INSTANCE.Init();
-	}
-	
-	@AfterEach
-	public void afterEach() {
-		BufferManager.INSTANCE.flushAll();
-		Catalog.INSTANCE.Finish();
-	}
-	
-	/**
-	 * Ce test est la pour être sur que notre headerpage est créé avec les bonnes valeurs par défaut pour les pages: (-1,0) (-1,0)
-	 */
-	@Test
-	public void testHeaderPageIsCreated() {
 		ArrayList<RelationInfo> tableauRelInfo = Catalog.INSTANCE.getTableauRelInfo();
-		PageID headerpage = tableauRelInfo.get(0).getHeaderPageId();
+		headerpage = tableauRelInfo.get(0).getHeaderPageId();
 		ByteBuffer buff = BufferManager.INSTANCE.getPage(headerpage);
 		buff.rewind();
-		assertEquals(buff.getInt(),-1);
-		assertEquals(buff.getInt(),0);
-		assertEquals(buff.getInt(),-1);
-		assertEquals(buff.getInt(),0);
+		System.out.println(buff.getInt()==-1);
+		System.out.println(buff.getInt()==0);
+		System.out.println(buff.getInt()==-1);
+		System.out.println(buff.getInt()==0);
 		BufferManager.INSTANCE.freePage(headerpage, true);
-	}
-	
-	/**
-	 * Test si la prochaine page du headerPage après création d'une page libre est bien celle qui a été créé après
-	 */
-	@Test
-	public void addDataPageTest() {
-		ArrayList<RelationInfo> tableauRelInfo = Catalog.INSTANCE.getTableauRelInfo();
+		BufferManager.INSTANCE.flushAll();
+		Catalog.INSTANCE.Finish();
+		
+		Catalog.INSTANCE.Init();
+		tableauRelInfo = Catalog.INSTANCE.getTableauRelInfo();
 		PageID pageId = FileManager.INSTANCE.addDataPage(tableauRelInfo.get(0));
-		PageID headerpage = tableauRelInfo.get(0).getHeaderPageId();
-		ByteBuffer buff = BufferManager.INSTANCE.getPage(headerpage);
+		headerpage = tableauRelInfo.get(0).getHeaderPageId();
+		buff = BufferManager.INSTANCE.getPage(headerpage);
 		buff.rewind();
 		PageID nextpageidheader = new PageID(buff.getInt(),buff.getInt());
 		BufferManager.INSTANCE.freePage(headerpage, true);
 		BufferManager.INSTANCE.flushAll();
 		PageID freepage = FileManager.INSTANCE.getFreeDataPage(tableauRelInfo.get(0));
-		assertEquals(pageId,nextpageidheader);
+		System.out.println(pageId.equals(nextpageidheader));
 		System.out.println(freepage.getFileId()+" "+freepage.getPageId());
 		System.out.println(nextpageidheader.getFileId()+" "+nextpageidheader.getPageId());
-		assertEquals(freepage,nextpageidheader);
-	}
-	
-	@Test
-	public void fullDataPage() {
+		System.out.println(freepage.equals(nextpageidheader));
+		BufferManager.INSTANCE.flushAll();
+		Catalog.INSTANCE.Finish();
 		
 	}
+	
 }

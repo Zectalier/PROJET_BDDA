@@ -47,6 +47,7 @@ public class CreateRelationCommand {
 		}
 		RelationInfo relinfo = new RelationInfo(nomRelation,nbColonnes,listeColInfo,headerPage);
 		Catalog.INSTANCE.AddRelation(relinfo);
+		BufferManager.INSTANCE.flushAll();
 	}
 	
 	

@@ -43,6 +43,7 @@ public class BatchInsertCommand {
 				PageID freePage = FileManager.INSTANCE.getFreeDataPage(relInfo);
 				FileManager.INSTANCE.writeRecordToDataPage(relInfo, record, freePage);
 			}
+			BufferManager.INSTANCE.flushAll();
 			br.close();
 			fr.close();
 		} catch (NoSuchElementException e) {

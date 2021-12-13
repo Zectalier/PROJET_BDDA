@@ -108,7 +108,7 @@ public enum FileManager {
 		buff.putInt(nextPageId);
 		BufferManager.INSTANCE.freePage(pageId, true);
 
-		//nextPage correspond à la page qui était à l'origine la page libre suivante du headerPage
+		//nextPage correspond �  la page qui était �  l'origine la page libre suivante du headerPage
 		//On va changer cette page en mettant le PageID de la nouvelle page inséré comme page précédente sauf si c'est la page de fileID -1 (page factice)
 		if(nextFileId != -1) {
 			PageID nextPage = new PageID(nextFileId, nextPageId);
@@ -177,7 +177,7 @@ public enum FileManager {
 				position = 16+slotCount+i*rec.getRelationInfo().getRecordSize();
 				slotId = i;
 			}
-			else if(buff.get(i+16) == (byte)0 && found) { //si on trouve un autre slot à 0, le slot qu'on a choisi n'est pas le dernier libre, on sort de la boucle
+			else if(buff.get(i+16) == (byte)0 && found) { //si on trouve un autre slot �  0, le slot qu'on a choisi n'est pas le dernier libre, on sort de la boucle
 				islast = false;
 				break;
 			}
@@ -207,7 +207,7 @@ public enum FileManager {
 				buff.putInt(pageId.getFileId());
 				buff.putInt(pageId.getPageId());
 				BufferManager.INSTANCE.freePage(headerPage, true);
-				//Remplaçons les pointeurs de la page rempli qui était à l'origine après la headerpage par ceux de notre nouvelle page remplie
+				//Remplaçons les pointeurs de la page rempli qui était �  l'origine après la headerpage par ceux de notre nouvelle page remplie
 				if(nextPage.getFileId()!=-1) {
 					buff = BufferManager.INSTANCE.getPage(nextPage);
 					buff.position(0);
